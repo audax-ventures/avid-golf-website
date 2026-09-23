@@ -1,0 +1,27 @@
+.avid-intro{position:fixed;inset:0;z-index:1000;background:#101511;color:#f5f6f2;display:grid;place-items:center;overflow:hidden;animation:intro-failsafe .01s 4s forwards}
+.avid-intro__center{text-align:center;transform:translateY(-12px)}
+.avid-intro__mark{position:relative;width:190px;height:126px;margin:0 auto 28px;overflow:hidden}
+.avid-intro__mark img{position:absolute;inset:0;width:190px;height:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.14}
+.avid-intro__mark img:last-child{opacity:1;filter:brightness(0) saturate(100%) invert(76%) sepia(78%) saturate(1100%) hue-rotate(52deg);clip-path:inset(0 100% 0 0);animation:intro-logo 1.15s .15s cubic-bezier(.22,1,.36,1) forwards}
+.avid-intro__title{font-size:clamp(35px,7vw,58px);line-height:1.1;letter-spacing:.12em;font-weight:700;margin:0;opacity:0;animation:intro-type .65s .5s both}
+.avid-intro__tagline{font-size:15px;letter-spacing:.05em;color:#b5c7b8;margin:18px 0 0;opacity:0;animation:intro-type .6s .8s both}
+.avid-intro__caption{position:absolute;bottom:36px;left:4%;font-size:12px;letter-spacing:.15em;color:#9cae9f}
+.avid-intro__skip{position:absolute;right:4%;top:28px;border:1px solid #6d816e;border-radius:3px;background:transparent;color:#d8e5d9;padding:10px 15px;font-size:13px;cursor:pointer}
+.avid-intro__skip:focus-visible{outline:2px solid #4fdb39;outline-offset:5px}
+.avid-intro__line{position:absolute;bottom:0;left:0;right:0;height:3px;background:#233b28}
+.avid-intro__line:after{content:'';display:block;height:100%;background:#4fdb39;transform:scaleX(0);transform-origin:left;animation:intro-line 1.65s cubic-bezier(.4,0,.2,1) forwards}
+.avid-intro.is-leaving{transform:translateY(-101%);transition:transform .65s cubic-bezier(.76,0,.24,1)}
+html.intro-active{overflow:hidden}
+html.intro-active .hero-image>img{animation:none}
+html.intro-reveal .hero-copy,html.intro-reveal .page-hero>div{animation:intro-content .8s .1s both}
+html.intro-reveal .hero-image{animation:intro-content 1s .15s both}
+.avid-intro.is-reduced .avid-intro__mark img:last-child{animation:none;clip-path:none}
+.avid-intro.is-reduced .avid-intro__title,.avid-intro.is-reduced .avid-intro__tagline{animation:none;opacity:1}
+.avid-intro.is-reduced .avid-intro__line{display:none}
+.avid-intro.is-reduced.is-leaving{transform:none;opacity:0;transition:opacity .18s ease}
+@keyframes intro-logo{to{clip-path:inset(0 0 0 0)}}
+@keyframes intro-type{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes intro-line{to{transform:scaleX(1)}}
+@keyframes intro-content{from{opacity:.3;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes intro-failsafe{to{visibility:hidden;pointer-events:none}}
+@media(prefers-reduced-motion:reduce){html.intro-reveal .hero-copy,html.intro-reveal .page-hero>div,html.intro-reveal .hero-image{animation:none}}
