@@ -9,7 +9,7 @@
 .header nav>a{font-size:14px;white-space:nowrap}
 .header nav>a[aria-current="page"]{color:#08761c;font-weight:700}
 .header nav>a[aria-current="page"]:after{width:100%}
-@media(min-width:1000px) and (max-width:1439px){
+@media(min-width:1000px){
  html{scroll-padding-top:145px}
  .header{height:136px;display:grid;grid-template-columns:1fr auto;grid-template-rows:70px 44px;gap:0;padding-top:8px;padding-bottom:8px}
  .header .brand{grid-column:1;grid-row:1}
