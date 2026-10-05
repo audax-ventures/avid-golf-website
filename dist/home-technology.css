@@ -6,14 +6,12 @@
 #avid-tech .at-ripple{fill:none;stroke:#c7e995;opacity:0;transform-origin:241px 151px}
 #avid-tech .at-playing .at-ripple{animation:at-ripple 1100ms 1300ms ease-out both}
 #avid-tech .at-club-view{display:none}#avid-tech .at-visual[data-view="1"] .at-flight-view{display:none}#avid-tech .at-visual[data-view="1"] .at-club-view{display:block}
-#avid-tech .at-club-head{transform-origin:150px 118px}
-#avid-tech .at-playing .at-club-head{animation:at-swing 1700ms cubic-bezier(.3,.1,.15,1) both}
 #avid-tech .at-playing .at-club-trace{animation:at-flight 1700ms ease both}
 #avid-tech .at-impact{transform-origin:150px 118px;opacity:0}#avid-tech .at-playing .at-impact{animation:at-impact 1100ms 800ms ease-out both}
 #avid-tech .at-visual{transition:box-shadow 400ms,transform 400ms}#avid-tech .at-visual:hover{box-shadow:0 12px 28px #102a2325;transform:translateY(-3px)}
 @keyframes at-ball-travel{from{offset-distance:0%}to{offset-distance:100%}}
 @keyframes at-ripple{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(2)}}
-@keyframes at-swing{0%{transform:translate(-90px,55px) rotate(-40deg);opacity:.2}48%{opacity:1}65%{transform:translate(0,0) rotate(0)}100%{transform:translate(72px,-48px) rotate(28deg);opacity:.35}}
+
 @keyframes at-impact{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(2.3)}}
 @media(prefers-reduced-motion:reduce){#avid-tech *{animation:none!important;transition:none!important}#avid-tech .at-visual:hover{transform:none}}
 #avid-tech[data-motion=false] .at-visual:hover{transform:none}
