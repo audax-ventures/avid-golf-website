@@ -1,0 +1,45 @@
+.hours-pricing-page{--ink:#173b29;--muted:#657368;--line:#dce2d6;background:#f6f6ef;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.hours-pricing-page .section,.hours-pricing-page .page-hero{padding:64px max(5%,calc((100% - 1200px)/2))}
+.hours-pricing-page .hours-hero{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:6%;background:#f6f6ef}
+.hours-pricing-page .hours-hero>div{width:auto;min-width:0}
+.hours-pricing-page .hours-hero h1{font-size:clamp(54px,6vw,86px);line-height:1.02;letter-spacing:-3.5px;margin:26px 0}
+.hours-pricing-page h1 span{color:#197a3e}
+.hours-pricing-page .hours-hero p{font-size:18px;line-height:1.75;margin-bottom:28px}
+.hours-pricing-page .hours-hero .page-hero-photo{width:100%;height:520px;border-radius:20px;object-fit:cover;margin:0}
+.hours-pricing-page .button{background:#173b29;color:#fff;border-radius:8px;font-size:15px;padding:18px 24px}
+.hours-jump{display:inline-block;font-size:14px;font-weight:600;margin:20px;text-underline-offset:5px}
+.hours-highlights{display:flex;gap:25px;border-top:1px solid var(--line);margin-top:26px;padding-top:24px}
+.hours-highlights span{font-size:12px;color:var(--muted);line-height:1.6}.hours-highlights strong{display:block;font-size:25px;color:var(--ink);font-weight:500}
+.hours-pricing-page .rates-section{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:stretch;scroll-margin-top:110px;padding-top:10px}
+.hours-pricing-page .rates-sidebar{padding:32px;background:#173b29;border-radius:18px;color:#f6f6ef}
+.hours-pricing-page .rates-sidebar h2{font-size:34px;letter-spacing:-1px;margin:22px 0}
+.hours-pricing-page .rates-sidebar .eyebrow{color:#c5d5c1;font-size:10px}
+.hours-start{margin:28px 0;display:flex;flex-direction:column;gap:8px;color:#c5d5c1;font-size:12px}.hours-start strong{font-size:64px;letter-spacing:-3px;color:#d3edb3;font-weight:500;line-height:1}
+.hours-pricing-page .season-switch{gap:8px;flex-direction:column}
+.hours-pricing-page .season-switch button{background:transparent;color:#d6e1d1;border:1px solid #ffffff30;font-size:20px;border-radius:9px;padding:17px 20px;width:100%}
+.hours-pricing-page .season-switch button[aria-pressed=true]{background:#d3edb3;color:#173b29;border-color:#d3edb3}
+.hours-pricing-page .rates-sidebar p{color:#c5d5c1;font-size:14px}
+.hours-pricing-page .rates-sidebar .text-link{color:#fff}
+.hours-pricing-page .rates-content{padding:36px;background:#fff;border-radius:18px;min-width:0}
+.hours-pricing-page .rates-content h2{font-size:38px;letter-spacing:-1.5px}
+.hours-pricing-page .rates-content .note{font-size:13px;line-height:1.7;color:var(--muted)}
+.hours-pricing-page .rate-card{grid-template-columns:1fr 1.1fr;padding:19px 0}
+.hours-pricing-page .rate-card h3{font-size:18px;font-weight:500}.hours-pricing-page .rate-card strong{color:#197a3e;font-size:24px}
+.hours-pricing-page .rates-photo{grid-column:1/-1;position:relative;top:auto;display:block;margin:12px 0 0;overflow:hidden;border-radius:18px;height:290px;background:#173b29}
+.hours-pricing-page .rates-photo img{height:100%;width:100%;object-fit:cover;object-position:center 45%;border-radius:0}
+.hours-pricing-page .rates-photo:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#10281eeb,#10281e00)}
+.hours-pricing-page .rates-photo figcaption{position:absolute;left:36px;top:35px;z-index:1;color:#fff;font-size:38px;line-height:1.1;letter-spacing:-1px;max-width:70%;margin:0}
+.hours-pricing-page .rates-photo figcaption span{display:block;font-size:10px;letter-spacing:1.5px;margin-bottom:22px}.hours-pricing-page .rates-photo a{display:block;font-size:14px;letter-spacing:0;margin-top:25px;text-decoration:underline;text-underline-offset:5px}
+.hours-pricing-page .equipment-section{background:#f6f6ef;display:grid;grid-template-columns:1fr 1fr;gap:6%;padding-top:20px}
+.hours-pricing-page .equipment-section h2{font-size:clamp(34px,3.6vw,48px);line-height:1.08;letter-spacing:-1.7px;margin:22px 0 28px}
+.hours-pricing-page .equipment-section img{height:290px;width:100%;object-fit:cover;border-radius:16px}
+.hours-pricing-page .equipment-section .info-grid{display:flex;flex-direction:column;gap:18px}
+.hours-pricing-page .equipment-section .info-card{border:0;background:#fff;border-radius:16px;padding:28px;margin:0}
+.hours-pricing-page .equipment-section h3{font-size:25px;letter-spacing:-.6px;margin:18px 0}
+.hours-pricing-page .equipment-section p{font-size:15px;line-height:1.75;color:var(--muted)}
+.hours-pricing-page .hours-policies{display:grid;grid-template-columns:.8fr 1.4fr;gap:7%;background:#fff}
+.hours-policy-intro h2{font-size:40px;letter-spacing:-1.5px;margin:24px 0 18px}.hours-policy-intro p{color:var(--muted);line-height:1.7}
+.hours-policy-list .policy{max-width:none;margin:0;border-color:var(--line)}.hours-policy-list summary{font-size:18px;padding:25px 0}.hours-policy-list li{font-size:15px;line-height:1.8}
+.hours-pricing-page button:focus-visible,.hours-pricing-page a:focus-visible{outline:2px solid #197a3e;outline-offset:5px}
+@media(max-width:900px){.hours-pricing-page .rates-section{grid-template-columns:240px minmax(0,1fr)}.hours-pricing-page .rates-sidebar,.hours-pricing-page .rates-content{padding:25px}.hours-pricing-page .hours-hero .page-hero-photo{height:450px}.hours-highlights{gap:18px}.hours-jump{margin-left:0}}
+@media(max-width:760px){.hours-pricing-page .section,.hours-pricing-page .page-hero{padding:40px 6%}.hours-pricing-page .hours-hero,.hours-pricing-page .rates-section,.hours-pricing-page .equipment-section,.hours-pricing-page .hours-policies{grid-template-columns:1fr;gap:25px}.hours-pricing-page .hours-hero h1{font-size:54px;letter-spacing:-2.5px}.hours-pricing-page .hours-hero .page-hero-photo{height:320px}.hours-highlights{justify-content:space-between}.hours-pricing-page .rates-section{padding-top:0}.hours-pricing-page .season-switch{flex-direction:row}.hours-pricing-page .season-switch button{padding:15px}.hours-pricing-page .rates-content{padding:25px 20px}.hours-pricing-page .rate-card{grid-template-columns:1fr 1.15fr;gap:10px}.hours-pricing-page .rate-card h3{font-size:16px}.hours-pricing-page .rates-photo{height:275px}.hours-pricing-page .rates-photo figcaption{left:25px;top:30px;font-size:32px;max-width:85%}.hours-pricing-page .equipment-section{padding-top:0}.hours-pricing-page .hours-policies{gap:20px}}
