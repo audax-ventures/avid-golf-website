@@ -1,0 +1,38 @@
+.club-fittings-page{--ink:#173b29;--muted:#657368;--brand-dark:#197a3e;--line:#dce2d6;background:#f6f6ef;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.club-fittings-page .section,.club-fittings-page .page-hero{padding:64px max(5%,calc((100% - 1200px)/2))}
+.club-fittings-page .page-hero{display:grid;grid-template-columns:1.05fr 1fr;gap:6%;align-items:center;background:#f6f6ef}
+.club-fittings-page .page-hero>div{width:auto;min-width:0}.club-fittings-page .page-hero h1{font-size:clamp(52px,5.8vw,84px);line-height:1.04;letter-spacing:-3px;margin:26px 0}.club-fittings-page .page-hero p{font-size:18px;line-height:1.75;margin-bottom:28px}
+.club-fittings-page .page-hero-photo{width:100%;height:520px;object-fit:cover;border-radius:20px;margin:0}
+.club-fittings-page .button{background:#173b29;color:#fff;border-radius:8px;padding:18px 24px;font-size:15px}
+.fit-explore{display:inline-block;margin:20px 0 0 18px;font-size:13px;font-weight:600}.fit-highlights{display:flex;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);padding-top:24px;margin-top:28px}.fit-highlights span{font-size:12px;border:1px solid var(--line);border-radius:30px;padding:9px 12px;color:var(--muted)}
+.club-fittings-page .fit-brands-section{padding-top:10px}.fit-brands-section h2{font-size:38px;letter-spacing:-1.2px;margin:22px 0 28px}
+.club-fittings-page .brand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;border:0;padding:0;margin:0}
+.club-fittings-page .brand-tile{max-width:none;width:100%;min-width:0;border:1px solid #e3e7dd;background:#fff;border-radius:16px;padding:32px;min-height:145px;display:flex;align-items:center;justify-content:center}
+.club-fittings-page .brand-tile img{width:100%;max-width:220px;height:60px;object-fit:contain}.club-fittings-page .brand-tile.lab-brand{background:#173b29;border-color:#173b29}.fit-brands-section .note{font-size:13px;color:var(--muted);margin:22px 0 0}
+.club-fittings-page .fitting-benefits{display:block;background:#f6f6ef;padding-top:0}
+.fit-benefits-inner{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:18px;overflow:hidden;align-items:stretch}
+.fit-benefits-inner>div:last-child{padding:36px;min-width:0}
+.club-fittings-page .fitting-data{border-radius:0;background:#172d23;padding:35px 24px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.club-fittings-page .fitting-data img{min-height:0;width:100%;height:auto;border-radius:8px}.club-fittings-page .fitting-data>span{font-size:10px;margin-top:28px}
+.club-fittings-page .fitting-benefits h2{font-size:42px;letter-spacing:-1.5px;margin:24px 0;line-height:1.08}
+.club-fittings-page .benefit-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.club-fittings-page .benefit-choices button{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;font-size:13px;padding:13px 4px;color:var(--muted)}
+.club-fittings-page .benefit-choices button[aria-pressed=true]{color:#197a3e;border-color:#197a3e;background:transparent}
+.club-fittings-page #benefit-copy{border:0;padding-top:24px;min-height:180px}.club-fittings-page #benefit-copy h3{font-size:26px;margin:0 0 16px}.club-fittings-page #benefit-copy p{font-size:16px;line-height:1.75}.club-fittings-page .fitting-benefits .text-link{font-size:14px}
+.club-fittings-page .fitting-process{background:#fff;grid-template-columns:1fr 1fr;gap:7%;scroll-margin-top:110px;align-items:start}
+.club-fittings-page .process-heading h2{font-size:45px;letter-spacing:-1.7px;margin:24px 0}.club-fittings-page .process-heading p{font-size:16px;line-height:1.75;max-width:440px;color:var(--muted)}
+.fit-process-photo{height:220px;width:100%;object-fit:cover;border-radius:14px;margin-top:26px}
+.club-fittings-page .process-steps{background:#f6f6ef;border-radius:18px;padding:12px 28px}
+.club-fittings-page .process-steps details{border-color:#dce2d6}.club-fittings-page .process-steps details:first-child{border-top:0}
+.club-fittings-page .process-steps summary{padding:24px 0;grid-template-columns:36px 1fr 20px;gap:10px}.club-fittings-page .process-steps summary strong{font-size:18px}.club-fittings-page .process-steps p{font-size:15px;line-height:1.8;padding-left:46px}.club-fittings-page .step-number{font-size:20px}
+.club-fittings-page .demo-section{background:#f6f6ef;grid-template-columns:.8fr 1.2fr;gap:6%;align-items:center}
+.club-fittings-page .demo-heading h2{font-size:43px;letter-spacing:-1.5px;margin:24px 0}.club-fittings-page .demo-heading p{font-size:16px;line-height:1.75;color:var(--muted)}
+.club-fittings-page .demo-empty,.club-fittings-page .demo-event{background:#fff;border-radius:18px;padding:30px;margin:0;gap:26px;display:flex;align-items:center;flex-direction:row}
+.club-fittings-page .date-plaque{background:#173b29;color:#f6f6ef;border:0;border-radius:12px;min-width:110px;min-height:150px;width:110px}.club-fittings-page .date-plaque strong{color:#d3edb3;font-size:38px}.club-fittings-page .date-plaque span{font-size:10px;color:#c5d5c1}
+.club-fittings-page .demo-empty h3{font-size:25px;letter-spacing:-.6px}.club-fittings-page .demo-empty p{font-size:15px;line-height:1.75}.club-fittings-page .demo-empty .text-link{font-size:14px}
+.club-fittings-page .fitting-stories{background:#f6f6ef;padding-top:0;grid-template-columns:.8fr 1.2fr;gap:6%;align-items:center}
+.club-fittings-page .fitting-stories h2{font-size:43px;letter-spacing:-1.5px}.club-fittings-page #testimonials{border:0;border-radius:18px;background:#fff;padding:32px}.club-fittings-page #testimonials p{font-size:16px;line-height:1.8}.club-fittings-page #testimonials .text-link{font-size:14px}
+.club-fittings-page .fitting-book{background:#173b29;color:#f6f6ef;text-align:center}.club-fittings-page .fitting-book h2{font-size:clamp(40px,4.7vw,62px);line-height:1.05;letter-spacing:-2px}.club-fittings-page .fitting-book h2 span{color:#d3edb3}.club-fittings-page .fitting-book .button{background:#d3edb3;color:#173b29}.club-fittings-page .fitting-book .note{color:#c5d5c1;font-size:13px}
+.club-fittings-page a:focus-visible,.club-fittings-page button:focus-visible,.club-fittings-page summary:focus-visible{outline:2px solid #197a3e;outline-offset:4px}
+@media(max-width:900px){.fit-explore{margin-left:0}.fit-benefits-inner>div:last-child{padding:25px}.club-fittings-page .fitting-benefits h2{font-size:35px}.club-fittings-page .demo-section{grid-template-columns:1fr}.club-fittings-page .demo-empty{margin-top:24px}}
+@media(max-width:760px){.club-fittings-page .section,.club-fittings-page .page-hero{padding:40px 6%}.club-fittings-page .page-hero,.fit-benefits-inner,.club-fittings-page .fitting-process,.club-fittings-page .fitting-stories{grid-template-columns:1fr;gap:26px}.fit-benefits-inner{gap:0}.club-fittings-page .page-hero h1{font-size:50px;letter-spacing:-2.5px}.club-fittings-page .page-hero-photo{height:320px;border-radius:18px}.club-fittings-page .fit-brands-section,.club-fittings-page .fitting-benefits,.club-fittings-page .fitting-stories{padding-top:0}.fit-brands-section h2{font-size:32px}.club-fittings-page .brand-grid{gap:10px}.club-fittings-page .brand-tile{padding:12px;min-height:95px}.club-fittings-page .brand-tile img{height:40px}.club-fittings-page .process-heading h2,.club-fittings-page .demo-heading h2,.club-fittings-page .fitting-stories h2{font-size:37px}.club-fittings-page .process-steps{padding:10px 20px}.club-fittings-page .demo-empty{flex-direction:column;align-items:flex-start;padding:25px}.club-fittings-page #testimonials{padding:25px}}
