@@ -1,0 +1,52 @@
+.coaching-page{--ink:#173b29;--muted:#657368;--brand-dark:#197a3e;--line:#dce2d6;background:#f6f6ef;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.coaching-page .section{padding:64px max(5%,calc((100% - 1200px)/2))}
+.coaching-page .button{background:#173b29;color:#fff;border-radius:8px;font-size:15px;padding:18px 24px}
+.coaching-page .coaching-hero{background:#f6f6ef;gap:6%;grid-template-columns:1.05fr 1fr}
+.coaching-page .coaching-hero h1{font-size:clamp(52px,5.7vw,80px);letter-spacing:-3px;line-height:1.04}
+.coaching-page .coaching-hero p{font-size:18px}
+.coaching-page .coaching-hero figure{border-radius:20px;overflow:hidden;background:#173b29}
+.coaching-page .coaching-hero img{height:520px;width:100%;border-radius:0;object-fit:cover}
+.coaching-page .coaching-hero figure:after{content:'';position:absolute;inset:60% 0 0;background:linear-gradient(transparent,#10281ed9);pointer-events:none}
+.coaching-page .coaching-hero figcaption{z-index:1;font-size:11px;max-width:300px}
+.coaching-highlights{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;padding-top:25px;border-top:1px solid var(--line)}.coaching-highlights span{font-size:12px;border:1px solid var(--line);padding:9px 12px;border-radius:30px;color:var(--muted)}
+.coaching-page .lesson-section{padding-top:15px;scroll-margin-top:120px}
+.coaching-page .lesson-heading{gap:24px 8%}.coaching-page .lesson-heading h2{font-size:clamp(36px,4vw,52px);letter-spacing:-1.8px;line-height:1.06}.coaching-page .lesson-heading p{font-size:16px}
+.coaching-page .lesson-options{gap:24px;margin-top:34px}
+.coaching-page .lesson-options article{background:#fff;border:0;border-radius:18px;padding:34px;display:flex;flex-direction:column}
+.coaching-page .lesson-options article:nth-child(2){background:#173b29;color:#f6f6ef}
+.coaching-page .lesson-options h3{font-size:38px;letter-spacing:-1.2px;line-height:1.1;margin:24px 0 20px}
+.coaching-page .lesson-options article>p{font-size:16px;min-height:84px}
+.coaching-page .lesson-options article:nth-child(2)>p,.coaching-page .lesson-options article:nth-child(2) .eyebrow,.coaching-page .lesson-options article:nth-child(2) small{color:#c5d5c1}
+.coaching-page .lesson-options article:nth-child(2) h3,.coaching-page .lesson-options article:nth-child(2) dd{color:#d3edb3}
+.coaching-page .lesson-options dl{margin:10px 0 26px}.coaching-page .lesson-options dt{font-size:15px}.coaching-page .lesson-options dd{font-size:38px}
+.coaching-page .lesson-options article:nth-child(2) dl>div{border-color:#ffffff25}
+.coaching-page .lesson-options .text-link{margin-top:auto;font-size:14px;display:flex;justify-content:space-between;align-items:center;padding:17px 0 3px;border:0;width:100%}
+.coaching-page .lesson-options .text-link:after{content:'↗';font-size:24px}
+.coaching-page .lesson-options article:nth-child(2) .text-link{color:#fff}
+.coaching-page .coaching-insight{display:block;background:#f6f6ef;padding-top:0}
+.coaching-insight-inner{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:18px;overflow:hidden;align-items:stretch}
+.coaching-insight-inner>div:last-child{padding:36px}
+.coaching-page .insight-photo{border-radius:0;background:#172d23;padding:35px 24px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.coaching-page .insight-photo img{min-height:0;width:100%;height:auto;border-radius:8px}
+.coaching-page .insight-photo>span{font-size:10px;margin-top:26px}
+.coaching-page .coaching-insight h2{font-size:37px;letter-spacing:-1.3px;margin:22px 0}
+.coaching-insight-inner>div>p{font-size:16px;color:var(--muted);line-height:1.75}
+.coaching-page .coaching-questions summary{font-size:15px;padding:20px 0}.coaching-page .coaching-questions p{font-size:14px;line-height:1.8}
+.coaching-page .coaches-section{background:#fff}.coaching-page .coaches-heading h2{font-size:48px;letter-spacing:-1.8px}.coaching-page .coaches-heading p{font-size:14px}
+.coaching-page .coach-profiles{gap:22px}
+.coaching-page .coach-profile{border:1px solid #e4e8df;border-radius:16px;overflow:hidden;background:#f6f6ef}
+.coaching-page .portrait-placeholder{border:0;border-radius:0;min-height:285px;background:radial-gradient(ellipse at 85% 10%,#dce6d080,transparent 65%),#edf0e7;padding:25px;position:relative}
+.coaching-page .portrait-label{font-size:34px;color:#557461}.coaching-page .placeholder-caption{font-size:10px}
+.coaching-page .coach-profile-copy{padding:25px}.coaching-page .coach-profile-copy h3{font-size:26px}.coaching-page .coach-profile-copy p{font-size:14px;margin-bottom:0}.coaching-page .coach-profile-copy .eyebrow{font-size:10px}
+.coaching-page .coaches-section>.text-link{font-size:14px;margin-top:15px}
+.coaching-page .winter-clinics{background:#f6f6ef;gap:0;align-items:stretch;scroll-margin-top:110px}
+.coaching-page .clinic-intro{background:#173b29;color:#f6f6ef;padding:34px;border-radius:18px 0 0 18px;display:flex;flex-direction:column}
+.coaching-page .clinic-intro .eyebrow,.coaching-page .clinic-intro p{color:#c5d5c1}.coaching-page .clinic-intro h2{font-size:43px;letter-spacing:-1.7px;margin:22px 0}.coaching-page .clinic-intro h2 span{color:#d3edb3}.coaching-page .clinic-intro p{font-size:16px;margin:0}
+.coaching-page .clinic-intro img{height:240px;width:100%;object-fit:cover;margin-top:28px;border-radius:12px}
+.coaching-page .clinic-schedule{border-radius:0 18px 18px 0;padding:34px}
+.coaching-page .clinic-status{border-radius:30px;background:#f0f4e9;border:0;color:#426343;font-size:12px}
+.coaching-page .clinic-pending h3{font-size:38px;letter-spacing:-1.2px}.coaching-page .clinic-pending p{font-size:16px}
+.coaching-page .coaching-close{background:#fff}.coaching-page .coaching-close h2{font-size:40px;letter-spacing:-1.4px}.coaching-page .coaching-close p{font-size:16px;max-width:570px}
+.coaching-page a:focus-visible,.coaching-page summary:focus-visible{outline:2px solid #197a3e;outline-offset:5px}
+@media(max-width:900px){.coaching-page .coaching-hero h1{font-size:54px}.coaching-page .lesson-options article,.coaching-insight-inner>div:last-child{padding:26px}.coaching-page .lesson-options h3{font-size:32px}.coaching-page .coaching-insight h2{font-size:32px}.coaching-page .clinic-intro,.coaching-page .clinic-schedule{padding:26px}}
+@media(max-width:760px){.coaching-page .section{padding:40px 6%}.coaching-page .coaching-hero,.coaching-page .lesson-options,.coaching-insight-inner,.coaching-page .winter-clinics{grid-template-columns:1fr}.coaching-page .coaching-hero h1{font-size:49px;letter-spacing:-2.4px}.coaching-page .coaching-hero img{height:320px}.coaching-page .lesson-section{padding-top:0}.coaching-page .lesson-heading h2{font-size:36px}.coaching-page .lesson-options{gap:20px}.coaching-page .lesson-options article>p{min-height:0}.coaching-page .coaching-insight{padding-top:0}.coaching-page .insight-photo{padding:30px 20px}.coaching-page .coaches-heading h2{font-size:37px}.coaching-page .portrait-placeholder{min-height:260px}.coaching-page .clinic-intro{border-radius:18px 18px 0 0}.coaching-page .clinic-schedule{border-radius:0 0 18px 18px}.coaching-page .clinic-intro h2{font-size:37px}.coaching-page .coaching-close h2{font-size:36px}}
