@@ -1,0 +1,27 @@
+/* Adapted from the supplied AVID section design; scoped to the homepage section. */
+#experience.experience-redesign{background:#f6f6ef;color:#173b29;padding:64px 5%;font-family:Arial,Helvetica,sans-serif;scroll-margin-top:0}
+.experience-inner{max-width:1200px;margin:auto}
+#experience.experience-redesign h2{font-size:clamp(36px,4.4vw,60px);font-weight:500;letter-spacing:-2px;line-height:1.03;margin:0}
+#experience.experience-redesign h2 span{display:block;color:#197a3e}
+.experience-stage{margin-top:36px;display:grid;grid-template-columns:1.05fr 1fr;min-height:460px;border-radius:16px;overflow:hidden;background:#fff}
+.experience-picture{position:relative;overflow:hidden;min-height:400px;background:#172a20}
+.experience-picture img{width:100%;height:100%;position:absolute;object-fit:cover;object-position:40% center;transition:transform 1.4s cubic-bezier(.2,.7,.2,1);transform:scale(1.03)}
+.experience-picture:hover img{transform:scale(1.08)}
+.experience-picture:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(transparent 55%,#071b13b3)}
+.experience-details{padding:36px;display:flex;flex-direction:column;min-width:0}
+.experience-tabs-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative;border-bottom:1px solid #dce2d6;padding-bottom:12px;margin-bottom:32px;gap:4px}
+.experience-tabs-list:after{content:'';position:absolute;bottom:-1px;left:0;width:33.333%;height:2px;background:#197a3e;transform:translateX(0);transition:transform 450ms cubic-bezier(.2,.8,.2,1)}
+.experience-tabs-list:has(#tab-practise[aria-selected=true]):after{transform:translateX(100%)}
+.experience-tabs-list:has(#tab-unwind[aria-selected=true]):after{transform:translateX(200%)}
+.experience-tabs-list button{font:inherit;font-size:17px;padding:8px 0;color:#657368;border:0;background:transparent;text-align:left;min-height:52px}
+.experience-tabs-list button[aria-selected=true]{color:#197a3e}
+.experience-tabs-list button span{font-size:12px;display:block;margin-bottom:6px;letter-spacing:1px}
+#experience-panel{flex:1;display:flex;flex-direction:column}
+#experience #tab-kicker{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:#657368;margin:0 0 17px;line-height:1.6}
+#experience #tab-title{font-size:clamp(29px,2.9vw,39px);line-height:1.08;letter-spacing:-.9px;font-weight:500;margin:0 0 22px;color:#173b29}
+#experience #tab-description{font-size:16px;line-height:1.65;color:#657368;margin:0 0 30px}
+#experience #tab-link{font-size:15px;font-weight:600;padding:16px 19px;min-height:48px;border:0;border-radius:6px;background:#173b29;color:#f6f6ef;display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:auto;width:100%;text-align:left}
+#experience #tab-link span{font-size:22px;transition:transform 250ms}#experience #tab-link:hover span{transform:translate(3px,-3px)}
+@media(max-width:760px){#experience.experience-redesign{padding:40px 6%}.experience-stage{grid-template-columns:1fr;margin-top:28px}.experience-picture{min-height:270px}.experience-picture img{object-position:center 43%}.experience-details{padding:25px}.experience-tabs-list{margin-bottom:25px}#experience.experience-redesign h2{font-size:36px;letter-spacing:-1.4px}#experience #tab-title{font-size:29px}.experience-tabs-list button{font-size:16px}}
+body.motion-paused .experience-picture img,body.motion-paused .experience-picture:hover img{transform:none}body.motion-paused #experience #tab-link:hover span{transform:none}
+@media(prefers-reduced-motion:reduce){.experience-picture img,.experience-picture:hover img,#experience #tab-link:hover span{transform:none}#experience *{transition:none!important}}
