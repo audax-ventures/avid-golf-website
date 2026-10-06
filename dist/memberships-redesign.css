@@ -1,0 +1,46 @@
+.members-page{--ink:#173b29;--muted:#657368;--brand-dark:#197a3e;--line:#dce2d6;background:#f6f6ef;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.members-page .section{padding:64px max(5%,calc((100% - 1200px)/2))}
+.members-page .button{background:#173b29;color:#fff;border-radius:8px;padding:18px 24px;font-size:15px}
+.members-page .member-hero{background:#f6f6ef;grid-template-columns:1.05fr 1fr;gap:6%}
+.members-page .member-hero h1{font-size:clamp(54px,6vw,84px);letter-spacing:-3px;line-height:1.04}
+.members-page .member-hero p{font-size:18px;line-height:1.75}
+.members-page .member-hero figure{border-radius:20px;overflow:hidden;background:#173b29}
+.members-page .member-hero img{height:520px;width:100%;border-radius:0;object-fit:cover}
+.members-page .member-hero figure:after{content:'';position:absolute;inset:60% 0 0;background:linear-gradient(transparent,#10281ed9);pointer-events:none}
+.members-page .member-hero figcaption{z-index:1;font-size:11px;letter-spacing:1.2px}
+.member-highlights{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;border-top:1px solid var(--line);padding-top:25px}.member-highlights span{font-size:12px;padding:9px 12px;border:1px solid var(--line);border-radius:30px;color:var(--muted)}
+.members-page .member-plans{padding-top:10px;scroll-margin-top:115px}
+.members-page .plan-heading h2{font-size:clamp(36px,4vw,52px);letter-spacing:-1.8px;line-height:1.06}.members-page .plan-heading p{font-size:16px}
+.members-page .plan-selector{border:0;gap:14px;margin-bottom:22px}
+.members-page .plan-selector button{background:#fff;border:1px solid #e3e7dd;border-radius:12px;padding:24px;gap:14px;color:var(--muted);text-align:left;transition:background 200ms,color 200ms}
+.members-page .plan-selector button[aria-pressed=true]{background:#173b29;color:#f6f6ef;border-color:#173b29}.members-page .plan-selector button[aria-pressed=true] strong{color:#d3edb3}
+.members-page .plan-selector strong{font-size:24px;letter-spacing:-.6px;line-height:1.2}.members-page .plan-selector small{font-size:12px;line-height:1.5}.members-page .plan-selector button>span{font-size:10px;letter-spacing:1.1px}
+.members-page .member-plan{grid-template-columns:.85fr 1.3fr;gap:0;padding:0;border-radius:18px;overflow:hidden;background:#fff;align-items:stretch}
+.members-page .member-plan[hidden]{display:none}
+.members-page .plan-price-column{background:#173b29;color:#f6f6ef;padding:36px;display:flex;flex-direction:column}
+.members-page .plan-price-column .eyebrow{color:#c5d5c1;font-size:10px}
+.members-page .plan-price-column h3{font-size:38px;line-height:1.1;letter-spacing:-1.3px;margin:25px 0}
+.members-page .member-price{color:#d3edb3;font-size:76px;letter-spacing:-3px;margin:10px 0 24px}
+.members-page .member-price>span{color:#c5d5c1;font-size:14px;line-height:1.5;letter-spacing:0}
+.members-page .plan-price-column>p{color:#c5d5c1;font-size:15px;line-height:1.75;margin-bottom:30px}
+.members-page .plan-price-column .button{background:#d3edb3;color:#173b29;font-size:14px;margin-top:auto;padding:17px 18px;align-self:flex-start}
+.members-page .plan-benefits{padding:36px}.members-page .plan-benefits h4{font-size:25px;letter-spacing:-.6px;margin-bottom:24px}
+.members-page .plan-benefits li{padding:19px 0 19px 30px;position:relative}.members-page .plan-benefits li:before{content:'✓';position:absolute;left:0;top:19px;color:#197a3e}
+.members-page .plan-benefits strong{font-size:18px}.members-page .plan-benefits li span{font-size:14px;line-height:1.7}
+.members-page .benefit-note{border:0;border-radius:8px;background:#f6f6ef;padding:16px 18px;font-size:13px;line-height:1.7;margin-top:16px}
+.members-page .plan-terms-link{border:0;padding:18px 0 0;font-size:13px}
+.members-page .winter-difference{display:block;background:#f6f6ef;padding-top:0}
+.winter-inner{display:grid;grid-template-columns:1.15fr 1fr;background:#fff;border-radius:18px;overflow:hidden;align-items:stretch}
+.winter-inner>div{padding:36px}.members-page .winter-difference h2{font-size:43px;letter-spacing:-1.6px;margin:24px 0}.members-page .winter-difference p{font-size:16px;line-height:1.75}
+.members-page .winter-choice h3{font-size:26px}.members-page .winter-choice p{font-size:14px}.members-page .winter-choice button{font-size:14px}.members-page .winter-choice>div{padding:22px 0}.members-page .winter-choice>div:last-child{padding-bottom:0}
+.members-page .winter-difference figure{min-height:100%;margin:0;position:relative}
+.members-page .winter-difference img{height:100%;width:100%;position:absolute;inset:0;object-fit:cover;border-radius:0}
+.members-page .winter-difference figure:after{content:'';position:absolute;inset:60% 0 0;background:linear-gradient(transparent,#10281ecc)}
+.members-page .winter-difference figcaption{z-index:1;font-size:11px}
+.members-page .member-terms{background:#fff;scroll-margin-top:115px}.members-page .member-terms h2{font-size:42px;letter-spacing:-1.5px;margin-bottom:30px}.members-page .member-terms .policy{max-width:none;border-color:var(--line)}.members-page .member-terms summary{font-size:18px;padding:24px 0}.members-page .member-terms li{font-size:15px;line-height:1.8}
+.members-page .summer-hours{background:#fff;padding-top:0}.members-page .summer-hours h2{font-size:32px;letter-spacing:-1px}.members-page .summer-hours p{font-size:15px;line-height:1.8;color:var(--muted);max-width:900px}.members-page .summer-hours .note{font-size:13px}.members-page .summer-hours .text-link{font-size:14px}
+.members-page .member-close{background:#173b29;color:#f6f6ef}.members-page .member-close h2{font-size:52px;letter-spacing:-2px;line-height:1.05}.members-page .member-close h2 span{color:#d3edb3}.members-page .member-close p{font-size:16px;color:#c5d5c1}.members-page .member-close .button{background:#d3edb3;color:#173b29}
+.members-page a:focus-visible,.members-page button:focus-visible,.members-page summary:focus-visible{outline:2px solid #197a3e;outline-offset:4px}
+@media(max-width:950px){.members-page .plan-selector button{padding:20px}.members-page .plan-selector strong{font-size:21px}.members-page .plan-price-column,.members-page .plan-benefits,.winter-inner>div{padding:28px}.members-page .plan-price-column h3{font-size:32px}}
+@media(max-width:760px){.members-page .section{padding:40px 6%}.members-page .member-hero,.members-page .member-plan,.winter-inner{grid-template-columns:1fr;gap:0}.members-page .member-hero{gap:30px}.members-page .member-hero h1{font-size:54px;letter-spacing:-2.5px}.members-page .member-hero img{height:320px}.members-page .member-plans{padding-top:0}.members-page .plan-heading h2{font-size:36px}.members-page .plan-selector{grid-template-columns:1fr;gap:10px}.members-page .plan-selector button{padding:20px;gap:8px}.members-page .plan-selector strong{font-size:23px}.members-page .plan-benefits,.members-page .plan-price-column,.winter-inner>div{padding:26px}.members-page .member-price{font-size:64px}.members-page .winter-difference{padding-top:0}.members-page .winter-difference h2{font-size:36px}.members-page .winter-difference figure{height:320px;min-height:0}.members-page .member-terms h2{font-size:36px}.members-page .summer-hours{padding-top:0}.members-page .member-close h2{font-size:42px}}
+@media(prefers-reduced-motion:reduce){.members-page .plan-selector button{transition:none}}
