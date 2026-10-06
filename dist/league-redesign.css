@@ -1,0 +1,43 @@
+.league-page{--ink:#173b29;--muted:#657368;--brand-dark:#197a3e;--line:#dce2d6;background:#f6f6ef;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.league-page .section{padding:64px max(5%,calc((100% - 1200px)/2));scroll-margin-top:115px}
+.league-page .button{background:#173b29;color:#fff;border-radius:8px;padding:18px 24px;font-size:15px}
+.league-page .league-hero{grid-template-columns:1.05fr 1fr;gap:6%;background:#f6f6ef}
+.league-page .league-hero h1{font-size:clamp(54px,6vw,84px);letter-spacing:-3px;line-height:1.03}
+.league-page .league-hero p{font-size:18px;line-height:1.75}
+.league-page .league-hero figure{border-radius:20px;overflow:hidden;background:#173b29}.league-page .league-hero img{height:540px;border-radius:0}
+.league-page .league-hero figcaption{border-radius:0;font-size:11px}
+.league-page .season-status{display:inline-block;background:#e7edde;color:#426343;padding:10px 14px;border-radius:30px;font-size:12px}
+.league-page .league-jumps{justify-content:flex-start;gap:12px;border:0;background:#f6f6ef;padding:0 max(5%,calc((100% - 1200px)/2)) 28px;flex-wrap:wrap}
+.league-page .league-jumps a{background:#fff;border:1px solid #e0e6d9;border-radius:30px;padding:13px 20px;font-size:13px;transition:background 180ms,color 180ms}.league-page .league-jumps a:hover{background:#173b29;color:#fff}
+.league-page .league-season{background:#f6f6ef;grid-template-columns:.85fr 1.15fr;gap:6%;padding-top:20px}
+.league-page .league-season h2,.league-page .league-heading h2,.league-page .contest-copy h2,.league-page .league-join h2{font-size:clamp(36px,4vw,52px);letter-spacing:-1.8px;line-height:1.06;margin:24px 0}
+.league-page .league-season>div>p{font-size:16px;line-height:1.8}.league-page .league-season .text-link{font-size:14px}
+.league-page .season-details{background:#fff;border-radius:18px;padding:12px 30px}
+.league-page .season-details details:last-child{border:0}.league-page .season-details summary{font-size:20px;padding:24px 0}
+.league-page .season-details p{font-size:15px;line-height:1.8;margin-top:0}.league-page .detail-status{font-size:11px;background:#edf2e7;color:#426343}
+.league-page .league-standings{background:#f6f6ef;padding-top:0}
+.league-page .league-heading{gap:6%;margin-bottom:28px}.league-page .league-heading>p{font-size:16px}
+.league-page .league-scoreboard{border:0;border-radius:18px;background:#173b29;color:#f6f6ef}
+.league-page .scoreboard-top,.league-page .scoreboard-bottom{border-color:#ffffff20;padding:24px 32px;font-size:10px}
+.league-page .board-status{background:#ffffff12;color:#d3edb3;border:1px solid #ffffff20;font-size:11px}
+.league-page .scoreboard-empty{padding:50px 36px;justify-content:flex-start;gap:40px}
+.league-page .scoreboard-mark{width:120px;height:120px;background:#ffffff06;border-color:#ffffff25;color:#d3edb3;font-size:52px}
+.league-page .scoreboard-empty h3{font-size:40px;letter-spacing:-1.4px;font-weight:500;color:#d3edb3}
+.league-page .scoreboard-empty p{color:#c5d5c1;font-size:16px;line-height:1.8;max-width:570px}
+.league-page .scoreboard-bottom{color:#c5d5c1}.league-page .scoreboard-bottom a{color:#f6f6ef;font-size:13px}
+.league-page .league-contests{display:block;background:#f6f6ef;padding-top:0}
+.league-contests-inner{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;background:#fff;border-radius:18px;overflow:hidden}
+.league-page .league-contests figure{position:relative;min-height:500px;background:#173b29}
+.league-page .league-contests img{height:100%;width:100%;position:absolute;inset:0;object-fit:cover;border-radius:0}
+.league-page .league-contests figure:after{content:'';position:absolute;inset:65% 0 0;background:linear-gradient(transparent,#10281ecc);pointer-events:none}
+.league-page .league-contests figcaption{position:absolute;bottom:22px;left:25px;right:25px;color:#fff;z-index:1;font-size:10px;line-height:1.7}
+.league-page .contest-copy{padding:36px;min-width:0}.league-page .contest-copy h2{font-size:38px;letter-spacing:-1.3px}
+.league-page .contest-copy>p,.league-page .contest-pending p{font-size:15px;line-height:1.8}
+.league-page .contest-pending{border:0;background:#f6f6ef;border-radius:12px;padding:24px;margin-top:25px}.league-page .contest-pending h3{font-size:25px;letter-spacing:-.6px}.league-page .contest-pending .detail-status{margin:0;line-height:1.5}
+.league-page .league-join{background:#fff;gap:6%;grid-template-columns:1.05fr 1fr}
+.league-page .league-join h2{font-size:48px}.league-page .league-join p{font-size:16px;line-height:1.8}.league-page .league-join .join-note{font-size:12px}
+.league-page .league-join img{height:400px;border-radius:18px}.league-page .league-actions .text-link{font-size:14px}
+.league-page a:focus-visible,.league-page summary:focus-visible{outline:2px solid #197a3e;outline-offset:4px}
+@media(max-width:900px){.league-page .contest-copy{padding:26px}.league-page .contest-copy h2{font-size:33px}.league-page .league-hero h1{font-size:60px}}
+@media(max-width:760px){.league-page .section{padding:40px 6%}.league-page .league-hero,.league-page .league-season,.league-page .league-heading,.league-contests-inner,.league-page .league-join{grid-template-columns:1fr}.league-page .league-hero{gap:30px}.league-page .league-hero h1{font-size:54px;letter-spacing:-2.5px}.league-page .league-hero img{height:340px}.league-page .league-jumps{padding:0 6% 20px;gap:8px}.league-page .league-jumps a{font-size:12px;padding:11px 15px}.league-page .league-season{padding-top:0;gap:25px}.league-page .season-details{padding:8px 22px}.league-page .season-details summary{font-size:18px}.league-page .league-standings,.league-page .league-contests{padding-top:0}.league-page .league-heading{gap:0}.league-page .scoreboard-top,.league-page .scoreboard-bottom{padding:20px;gap:15px;flex-wrap:wrap}.league-page .scoreboard-empty{display:block;padding:28px 24px}.league-page .scoreboard-mark{height:64px;width:64px;font-size:32px;margin-bottom:24px}.league-page .scoreboard-empty h3{font-size:32px}.league-page .league-contests figure{min-height:320px}.league-page .contest-copy{padding:26px}.league-page .contest-pending{padding:20px}.league-page .league-join{gap:28px}.league-page .league-join h2{font-size:40px}.league-page .league-join img{height:320px}}
+@media(prefers-reduced-motion:reduce){.league-page .league-jumps a{transition:none}}
