@@ -8,3 +8,7 @@ body.motion-paused .cinematic-media img{animation:none;will-change:auto}
 @media(prefers-reduced-motion:reduce){.cinematic-media img{animation:none;will-change:auto}}
 .cinematic-top .eyebrow,.cinematic-motto,.cinematic-details,.cinematic-tools button{font-size:12px}
 @media(max-width:600px){.cinematic-media img{object-position:87% center}.cinematic-top .eyebrow,.cinematic-details{font-size:12px}.cinematic-details{letter-spacing:.6px}.cinematic-copy{padding-top:260px}}
+
+/* Keep the golfer in frame with the COJO 2026 hero photo. */
+.cinematic-media img{object-position:55% center;transform-origin:55% 45%}
+@media(max-width:600px){.cinematic-media img{object-position:54% center;transform-origin:54% 35%}}
