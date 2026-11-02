@@ -41,7 +41,7 @@
 #avid-tech .at-inner{max-width:1440px}
 #avid-tech .at-layout{display:flex;flex-direction:column;gap:38px;align-items:stretch}
 #avid-tech .at-video-feature{margin:0;background:#050505;border-radius:22px;overflow:hidden;width:100%}
-#avid-tech .at-video-feature video{display:block;width:100%;height:auto;aspect-ratio:1920/1038;object-fit:contain;background:#000}
+#avid-tech .at-video-feature video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#000}
 #avid-tech .at-video-feature figcaption{padding:18px 26px;color:#b8c7bb;font-size:11px;letter-spacing:.13em}
 #avid-tech .at-content{display:grid;grid-template-columns:1fr 1fr;column-gap:7%;align-items:start}
 #avid-tech .at-content h3,#avid-tech .at-description{grid-column:1}
