@@ -37,3 +37,14 @@
 #avid-tech .at-more a{text-decoration:underline;text-underline-offset:4px;color:var(--at-ink)}
 #avid-tech button:focus-visible{outline:2px solid #88ae88;outline-offset:4px}
 @media(max-width:760px){#avid-tech{padding:40px 6%;scroll-margin-top:90px}#avid-tech .at-layout{grid-template-columns:1fr;gap:28px}#avid-tech .at-course{max-height:270px}#avid-tech h2{font-size:36px;letter-spacing:-1.4px}}
+/* Large, full-width Falcon video replaces the illustrative shot animation. */
+#avid-tech .at-inner{max-width:1440px}
+#avid-tech .at-layout{display:flex;flex-direction:column;gap:38px;align-items:stretch}
+#avid-tech .at-video-feature{margin:0;background:#050505;border-radius:22px;overflow:hidden;width:100%}
+#avid-tech .at-video-feature video{display:block;width:100%;height:auto;aspect-ratio:1920/1038;object-fit:contain;background:#000}
+#avid-tech .at-video-feature figcaption{padding:18px 26px;color:#b8c7bb;font-size:11px;letter-spacing:.13em}
+#avid-tech .at-content{display:grid;grid-template-columns:1fr 1fr;column-gap:7%;align-items:start}
+#avid-tech .at-content h3,#avid-tech .at-description{grid-column:1}
+#avid-tech .at-stats{grid-column:2;grid-row:1/3;margin:0 0 24px}
+#avid-tech .at-cta,#avid-tech .at-more{grid-column:2}
+@media(max-width:760px){#avid-tech .at-content{display:block}#avid-tech .at-video-feature{border-radius:14px}#avid-tech .at-video-feature figcaption{font-size:9px;padding:14px 16px}#avid-tech .at-stats{margin:24px 0}#avid-tech .at-layout{gap:26px}}
