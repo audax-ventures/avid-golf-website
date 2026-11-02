@@ -22,3 +22,6 @@ Source: https://cojophoto.sproutstudio.com/gallery/avid-golf-shoot-2026
 - `assets/photos/gspro.webp`: `Avid Golf 2026-0095.jpg` — Golf course and shot information projected on an AVID simulator screen
 - `assets/photos/bar.webp`: `Avid Golf 2026-0152.jpg` — Bar shelves at AVID Golf
 - `assets/photos/sign.webp`: `Avid Golf 2026-0205.jpg` — Illuminated AVID Golf logo inside the clubhouse
+
+- `assets/photos/front-bar.webp`: `Avid Golf 2026-0178.jpg` — front bar area.
+- `assets/falcon-exploded-view.webp`: Foresight Falcon expanded view supplied by AVID.

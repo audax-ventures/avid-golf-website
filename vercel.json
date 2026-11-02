@@ -4,5 +4,27 @@
   "buildCommand": "",
   "installCommand": "",
   "outputDirectory": "dist",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/coaching-clinics",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/coaching-clinics.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/club-fittings",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/club-fittings.html",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
 }

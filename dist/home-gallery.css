@@ -19,3 +19,5 @@
 #avid-gallery .gg-arrow:focus-visible{outline-color:#fff}
 #avid-gallery[data-motion=false] img,#avid-gallery[data-motion=false] button{transform:none!important}
 @media(max-width:760px){#avid-gallery{padding:40px 6%;scroll-margin-top:90px}#avid-gallery h2{font-size:36px;letter-spacing:-1.4px}#avid-gallery .gg-feature{aspect-ratio:1.05}#avid-gallery .gg-caption{font-size:15px;max-width:170px}#avid-gallery .gg-controls{left:16px;right:16px;bottom:16px}#avid-gallery .gg-bottom{flex-direction:column;align-items:flex-start;gap:8px}#avid-gallery .gg-all{grid-template-columns:1fr}}
+#avid-gallery .gg-thumbs{flex-wrap:wrap;gap:10px}
+@media(max-width:600px){#avid-gallery .gg-bottom{align-items:flex-start}#avid-gallery .gg-thumb{width:52px;height:44px}}

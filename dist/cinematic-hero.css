@@ -12,3 +12,8 @@ body.motion-paused .cinematic-media img{animation:none;will-change:auto}
 /* Keep the golfer in frame with the COJO 2026 hero photo. */
 .cinematic-media img{object-position:55% center;transform-origin:55% 45%}
 @media(max-width:600px){.cinematic-media img{object-position:54% center;transform-origin:54% 35%}}
+/* AVID's longer clubhouse headline. */
+.cinematic-copy{max-width:760px}.cinematic-copy h1{font-size:clamp(58px,6.5vw,104px);line-height:1.01;letter-spacing:-.055em}.cinematic-details span:last-child{text-transform:none}
+@media(min-width:1800px){.cinematic-copy{max-width:930px}.cinematic-copy h1{font-size:120px}}
+@media(max-width:1050px){.cinematic-copy{max-width:80%}.cinematic-copy h1{font-size:clamp(55px,7vw,82px)}}
+@media(max-width:600px){.cinematic-copy{max-width:100%;padding-top:210px}.cinematic-copy h1{font-size:clamp(44px,11.2vw,65px)}.cinematic-details{line-height:1.8}}
