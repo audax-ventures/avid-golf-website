@@ -52,7 +52,7 @@
 .lb-row:nth-child(4n+3){--row:#fafbf7}
 .lb-row:hover{--row:#f1f6ec}
 .lb-scroll{position:relative}
-.lb-scroll:after{content:'';position:absolute;top:1px;right:1px;bottom:1px;width:64px;border-radius:0 12px 12px 0;background:linear-gradient(90deg,#fff0,#fffffff2);pointer-events:none;opacity:0;transition:opacity .2s}
+.lb-scroll:after{content:'';position:absolute;top:calc(var(--head-h,0px) + 1px);right:1px;bottom:1px;width:64px;border-radius:0 0 14px 0;background:linear-gradient(90deg,#fff0,#fffffff2);pointer-events:none;opacity:0;transition:opacity .2s}
 .lb-scroll.lb-more:after{opacity:1}
 .lb-short{display:none}
 
@@ -92,6 +92,33 @@
 .lb-key-missed{color:#a9bfa8;font-style:italic!important;font-weight:400!important}
 .lb-hit>*{animation:lb-flash 2.4s ease}
 @keyframes lb-flash{0%,60%{background:#fff3b8}100%{background:inherit}}
+
+/* Refined leaderboard table: dark header, slimmer rows, light grey stripe on every second row */
+.lb-table-wrap{border-color:#dbe2d5;border-radius:14px;box-shadow:0 1px 2px #173b290a,0 8px 22px #173b290d}
+.lb-table{font-size:14.5px}
+.lb-table th,.lb-table td{border-bottom-color:#e9ede5}
+.lb-table thead th,.lb-table thead .lb-pos,.lb-table thead .lb-name,.lb-table thead .lb-topar{background:#173b29;color:#fff;border-bottom:0;font-size:10.5px;letter-spacing:1px;padding-top:11px;padding-bottom:11px}
+.lb-table thead .lb-topar{border-right-color:#ffffff26}
+.lb-table thead .lb-wk{color:#fff}
+.lb-table thead .lb-course{color:#b9cdbb}
+.lb-table thead .lb-wpar{color:#8fb09a}
+.lb-table thead th.lb-upcoming,.lb-table thead .lb-upcoming .lb-wk,.lb-table thead .lb-upcoming .lb-course,.lb-table thead .lb-upcoming .lb-wpar{color:#6f8f78}
+.lb-table tbody td{padding:9px 8px}
+.lb-expand{padding:9px 8px;gap:1px}
+.lb-team{font-size:14.5px}
+.lb-captain{font-size:11.5px}
+.lb-row>*{background:var(--row,#fff);transition:background .15s}
+.lb-row:nth-child(4n+3){--row:#f3f4f1}
+.lb-row:hover{--row:#e9f2e3}
+.lb-table .lb-pos{font-size:14px;color:#2f4a38}
+.lb-row.lb-lead>.lb-pos{box-shadow:inset 3px 0 0 #c99a1e}
+.lb-row.lb-lead .lb-team{color:#173b29}
+.lb-table .lb-topar{font-size:17px;border-right:1px solid #dbe2d5;box-shadow:6px 0 8px -7px #173b2833}
+.lb-move{font-size:9.5px;margin-top:1px}
+.lb-table td.lb-low:before{top:50%;bottom:auto;height:26px;transform:translateY(-50%);left:calc(50% - 18px);right:calc(50% - 18px);border-radius:13px;background:#dff0d1}
+.lb-group+.lb-group{margin-top:26px}
+.lb-group-title{font-size:17px;margin-bottom:10px}
+.lb-group-title span{background:#eef2e8;color:#4f6354;border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600}
 
 /* Footer */
 .league-page .lb .scoreboard-bottom{flex-wrap:wrap;gap:14px}
@@ -161,7 +188,7 @@
   .lb-panel{padding:18px 10px 22px}
   .lb-long{display:none}.lb-short{display:inline}
   .lb-table thead th{padding:10px 4px;letter-spacing:.4px}
-  .lb-table tbody td{padding:12px 4px}
+  .lb-table tbody td{padding:9px 4px}
   .lb-tools,.lb-search,.lb-search input{width:100%}
   .lb-view{width:100%}.lb-view button{flex:1;padding:10px 8px}
   .lb-table{font-size:14px}
@@ -174,7 +201,7 @@
   .lb-table .lb-last{display:table-cell;min-width:40px;width:40px;padding-right:10px}
   .lb-scroll:after{display:none}
   .lb-team{white-space:normal}
-  .lb-expand{cursor:pointer;padding:12px 4px;position:relative;padding-right:20px}
+  .lb-expand{cursor:pointer;padding:9px 4px;position:relative;padding-right:20px}
   .lb-expand:after{content:'⌄';position:absolute;right:4px;top:12px;font-size:14px;color:#6a786d;transition:transform .2s}
   .lb-expand[aria-expanded=true]:after{transform:rotate(180deg)}
   .lb-detail{display:table-row}

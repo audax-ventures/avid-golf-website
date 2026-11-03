@@ -368,7 +368,7 @@
         const dropped = playoff && !r.counted.has(w.id);
         return `<li class="${dropped ? 'lb-dropped' : ''}${missed ? ' lb-missed' : ''}"><span>Wk ${w.week_number}</span><span>${missed ? 'Missed week' : esc(w.course || 'Course TBA')}</span><strong class="${missed ? '' : parClass(s, w)}">${s}${w.par ? ` <small>(${formatToPar(s - w.par)})</small>` : ''}</strong></li>`;
       }).join('');
-      return `<tr class="lb-row${state.hit === t.id ? ' lb-hit' : ''}" data-team="${esc(t.id)}">
+      return `<tr class="lb-row${state.hit === t.id ? ' lb-hit' : ''}${r.pos === 1 ? ' lb-lead' : ''}" data-team="${esc(t.id)}">
         <td class="lb-pos">${r.pos == null ? '—' : (r.tied ? 'T' : '') + r.pos}${move}</td>
         <th scope="row" class="lb-name"><button type="button" class="lb-expand" aria-expanded="${open}" aria-controls="lb-d-${esc(t.id)}">
           <span class="lb-team">${esc(teamLabel(t))}</span>${!individual && t.name && t.captain ? `<span class="lb-captain">Capt. ${esc(t.captain)}</span>` : ''}
@@ -539,6 +539,8 @@
 
   // Fades the right edge while more weeks are hidden off to the side.
   function markScroll(wrap) {
+    const head = wrap.querySelector('thead');
+    if (head) wrap.parentElement.style.setProperty('--head-h', head.offsetHeight + 'px'); // fade starts under the dark header
     wrap.parentElement.classList.toggle('lb-more', wrap.scrollLeft + wrap.clientWidth < wrap.scrollWidth - 4);
   }
 
