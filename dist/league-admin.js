@@ -466,7 +466,7 @@
       addFlight,
       h('h3', null, individual ? `Players (${teams.length})` : `Teams (${teams.length})`),
       teams.length ? h('div', { class: 'adm-table-wrap' }, h('table', { class: 'adm-table' },
-        h('thead', null, h('tr', null, h('th', null, individual ? 'Player' : 'Team'), individual ? null : h('th', null, 'Captain'), flights.length ? h('th', null, 'Flight') : null, h('th', null, 'League'), h('th', null, h('span', { class: 'sr-only' }, 'Delete')))),
+        h('thead', null, h('tr', null, h('th', null, individual ? 'Player' : 'Team name (optional)'), individual ? null : h('th', null, 'Captain'), flights.length ? h('th', null, 'Flight') : null, h('th', null, 'League'), h('th', null, h('span', { class: 'sr-only' }, 'Delete')))),
         h('tbody', null, teamRows))) : h('p', { class: 'adm-muted' }, individual ? 'No players yet.' : 'No teams yet.'),
       h('h3', null, individual ? 'Add a player' : 'Add a team'), addTeam, bulkForm);
   }
