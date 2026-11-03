@@ -61,5 +61,10 @@
     return n > 0 ? '+' + n : '−' + Math.abs(n);
   }
 
-  window.AVIDLeague = { getClient, selectAll, esc, slug, formatDistance, formatToPar };
+  // A team without a name is shown by its captain's name.
+  function teamLabel(team) {
+    return (team.name || '').trim() || (team.captain || '').trim() || 'Unnamed team';
+  }
+
+  window.AVIDLeague = { getClient, selectAll, esc, slug, formatDistance, formatToPar, teamLabel };
 })();

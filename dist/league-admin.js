@@ -109,7 +109,7 @@
   const weekLabel = w => `Week ${w.week_number}${w.course ? ' · ' + w.course : ''}`;
   const sortTeams = (list, flights) => [...list].sort((a, b) => {
     const fa = flights.findIndex(f => f.id === a.flight_id), fb = flights.findIndex(f => f.id === b.flight_id);
-    return (fa < 0 ? 999 : fa) - (fb < 0 ? 999 : fb) || a.name.localeCompare(b.name);
+    return (fa < 0 ? 999 : fa) - (fb < 0 ? 999 : fb) || L.teamLabel(a).localeCompare(L.teamLabel(b));
   });
 
   /* ---------- Start and sign in ---------- */
@@ -424,20 +424,21 @@
 
     // Teams
     const teamRows = teams.map(t => teamRow(t, league, flights));
-    const tname = h('input', { type: 'text', placeholder: individual ? 'Player name' : 'Team name', required: true, 'aria-label': individual ? 'New player name' : 'New team name' });
+    const tname = h('input', { type: 'text', placeholder: individual ? 'Player name' : 'Team name (optional)', required: individual, 'aria-label': individual ? 'New player name' : 'New team name' });
     const tcapt = individual ? null : h('input', { type: 'text', placeholder: 'Captain', 'aria-label': 'New team captain' });
     const tflight = flights.length ? flightSelect(null, flights, 'New team flight') : null;
     const addTeam = h('form', {
       class: 'adm-inline-form', onSubmit: async e => {
         e.preventDefault();
         const v = tname.value.trim();
-        if (!v) return;
-        const row = { league_id: league.id, name: v, captain: tcapt ? tcapt.value.trim() : '', flight_id: tflight?.value || null };
-        if ((await run(S.sb.from('teams').insert(row))).ok) { toast(`Added ${v}`); await loadSeason(); document.querySelector('[aria-label="New team name"],[aria-label="New player name"]')?.focus(); }
+        const captain = tcapt ? tcapt.value.trim() : '';
+        if (!v && !captain) { toast('Enter a team name or a captain.', 'error'); tname.focus(); return; }
+        const row = { league_id: league.id, name: v, captain, flight_id: tflight?.value || null };
+        if ((await run(S.sb.from('teams').insert(row))).ok) { toast(`Added ${v || captain}`); await loadSeason(); document.querySelector('[aria-label="New team name"],[aria-label="New player name"]')?.focus(); }
       }
     }, tname, tcapt, tflight, h('button', { class: 'adm-btn small', type: 'submit' }, individual ? 'Add player' : 'Add team'));
 
-    const bulk = h('textarea', { rows: 5, placeholder: individual ? 'One player per line' : 'One team per line: Team name, Captain', 'aria-label': 'Add many at once' });
+    const bulk = h('textarea', { rows: 5, placeholder: individual ? 'One player per line' : 'One team per line: Team name, Captain\nNo team name? Start the line with a comma: , Captain', 'aria-label': 'Add many at once' });
     const bulkForm = h('details', { class: 'adm-bulk' }, h('summary', null, 'Add many at once'),
       h('form', {
         onSubmit: async e => {
@@ -445,7 +446,7 @@
           const rows = bulk.value.split('\n').map(line => line.trim()).filter(Boolean).map(line => {
             const [n, ...c] = line.split(',');
             return { league_id: league.id, name: n.trim(), captain: individual ? '' : c.join(',').trim() };
-          }).filter(r => r.name);
+          }).filter(r => r.name || r.captain);
           if (!rows.length) return;
           if ((await run(S.sb.from('teams').insert(rows))).ok) { toast(`Added ${rows.length}`); await loadSeason(); }
         }
@@ -477,36 +478,37 @@
 
   function teamRow(t, league, flights) {
     const individual = league.kind === 'individual';
-    const name = h('input', { type: 'text', value: t.name, 'aria-label': individual ? 'Player name' : 'Team name' });
+    const name = h('input', { type: 'text', value: t.name, placeholder: individual ? '' : 'No team name', 'aria-label': individual ? 'Player name' : 'Team name' });
     name.addEventListener('change', async () => {
       const v = name.value.trim();
-      if (!v) { name.value = t.name; return; }
+      if (!v && (individual || !t.captain)) { name.value = t.name; toast(individual ? 'A player needs a name.' : 'A team needs a name or a captain.', 'error'); return; }
       if ((await run(S.sb.from('teams').update({ name: v }).eq('id', t.id), name)).ok) t.name = v;
     });
-    const capt = individual ? null : h('input', { type: 'text', value: t.captain, 'aria-label': `${t.name} captain` });
+    const capt = individual ? null : h('input', { type: 'text', value: t.captain, 'aria-label': `${L.teamLabel(t)} captain` });
     capt?.addEventListener('change', async () => {
       const v = capt.value.trim();
+      if (!v && !t.name) { capt.value = t.captain; toast('A team needs a name or a captain.', 'error'); return; }
       if ((await run(S.sb.from('teams').update({ captain: v }).eq('id', t.id), capt)).ok) t.captain = v;
     });
-    const flight = flights.length ? flightSelect(t.flight_id, flights, `${t.name} flight`) : null;
+    const flight = flights.length ? flightSelect(t.flight_id, flights, `${L.teamLabel(t)} flight`) : null;
     flight?.addEventListener('change', async () => {
       const v = flight.value || null;
       if ((await run(S.sb.from('teams').update({ flight_id: v }).eq('id', t.id), flight)).ok) {
         t.flight_id = v;
-        toast(`${t.name} moved to ${v ? byId(flights, v).name : 'no flight'}`);
+        toast(`${L.teamLabel(t)} moved to ${v ? byId(flights, v).name : 'no flight'}`);
       }
     });
-    const lg = h('select', { 'aria-label': `${t.name} league` }, S.leagues.map(l => h('option', { value: l.id, selected: l.id === t.league_id }, l.name)));
+    const lg = h('select', { 'aria-label': `${L.teamLabel(t)} league` }, S.leagues.map(l => h('option', { value: l.id, selected: l.id === t.league_id }, l.name)));
     lg.addEventListener('change', async () => {
       const target = byId(S.leagues, lg.value);
-      if (!confirm(`Move ${t.name} to ${target.name}? Its scores move with it, and it will be taken out of its flight.`)) { lg.value = t.league_id; return; }
-      if ((await run(S.sb.from('teams').update({ league_id: lg.value, flight_id: null }).eq('id', t.id), lg)).ok) { toast(`${t.name} moved to ${target.name}`); await loadSeason(); }
+      if (!confirm(`Move ${L.teamLabel(t)} to ${target.name}? Its scores move with it, and it will be taken out of its flight.`)) { lg.value = t.league_id; return; }
+      if ((await run(S.sb.from('teams').update({ league_id: lg.value, flight_id: null }).eq('id', t.id), lg)).ok) { toast(`${L.teamLabel(t)} moved to ${target.name}`); await loadSeason(); }
     });
     const del = h('button', {
-      class: 'adm-icon', title: 'Delete', 'aria-label': `Delete ${t.name}`, onClick: async () => {
+      class: 'adm-icon', title: 'Delete', 'aria-label': `Delete ${L.teamLabel(t)}`, onClick: async () => {
         const n = S.scores.filter(s => s.team_id === t.id).length;
-        if (!confirm(`Delete ${t.name}${n ? ` and its ${n} scores` : ''}? This can’t be undone.`)) return;
-        if ((await run(S.sb.from('teams').delete().eq('id', t.id))).ok) { toast(`Deleted ${t.name}`); await loadSeason(); }
+        if (!confirm(`Delete ${L.teamLabel(t)}${n ? ` and its ${n} scores` : ''}? This can’t be undone.`)) return;
+        if ((await run(S.sb.from('teams').delete().eq('id', t.id))).ok) { toast(`Deleted ${L.teamLabel(t)}`); await loadSeason(); }
       }
     }, '✕');
     return h('tr', null, h('td', null, name), individual ? null : h('td', null, capt), flight ? h('td', null, flight) : null, h('td', null, lg), h('td', { class: 'adm-cell-icon' }, del));
@@ -560,7 +562,7 @@
         const s = scoreOf(t.id, w.id);
         const input = h('input', {
           class: 'adm-score', type: 'text', inputmode: 'numeric', maxlength: 3, value: s ? s.strokes : '',
-          'aria-label': `${t.name}, week ${w.week_number}`, 'data-r': r, 'data-c': c
+          'aria-label': `${L.teamLabel(t)}, week ${w.week_number}`, 'data-r': r, 'data-c': c
         });
         input.addEventListener('keydown', gridKeys);
         input.addEventListener('focus', () => input.select());
@@ -569,7 +571,7 @@
         return h('td', { 'data-week': w.id }, input);
       });
       updateTotal(t, total);
-      rows.push(h('tr', null, h('th', { scope: 'row', class: 'adm-sticky' }, h('strong', null, t.name), !individual && t.captain ? h('small', null, t.captain) : null), cells, total));
+      rows.push(h('tr', null, h('th', { scope: 'row', class: 'adm-sticky' }, h('strong', null, L.teamLabel(t)), !individual && t.name && t.captain ? h('small', null, t.captain) : null), cells, total));
     });
 
     const wrap = h('div', { class: 'adm-table-wrap adm-grid-wrap' }, h('table', { class: 'adm-table adm-grid' }, h('thead', null, head), h('tbody', null, rows)));
@@ -643,7 +645,7 @@
     let warn = '';
     if (s && others.length >= 2) {
       const avg = others.reduce((a, b) => a + b, 0) / others.length;
-      if (Math.abs(s.strokes - avg) > 12) warn = `This is ${Math.round(Math.abs(s.strokes - avg))} shots away from ${team.name}’s average (${Math.round(avg)}). Double-check it.`;
+      if (Math.abs(s.strokes - avg) > 12) warn = `This is ${Math.round(Math.abs(s.strokes - avg))} shots away from ${L.teamLabel(team)}’s average (${Math.round(avg)}). Double-check it.`;
     }
     if (s && week.par && (s.strokes < week.par - 25 || s.strokes > week.par + 50)) warn = `This looks unusual for a par ${week.par} course. Double-check it.`;
     input.classList.toggle('adm-warn', !!warn);

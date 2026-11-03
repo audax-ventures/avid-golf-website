@@ -6,7 +6,7 @@
   const highlights = document.getElementById('weekly-winners');
   if (!L || (!root && !highlights)) return;
 
-  const { esc, slug, formatDistance, formatToPar } = L;
+  const { esc, slug, formatDistance, formatToPar, teamLabel } = L;
   const demo = new URLSearchParams(location.search).get('preview') === 'demo';
   const CTP_TAB = 'closest-to-the-pin';
 
@@ -136,10 +136,10 @@
   function rank(rows, key) {
     const sorted = [...rows].sort((a, b) => {
       const x = a[key], y = b[key];
-      if (x == null && y == null) return a.team.name.localeCompare(b.team.name);
+      if (x == null && y == null) return teamLabel(a.team).localeCompare(teamLabel(b.team));
       if (x == null) return 1;
       if (y == null) return -1;
-      return x - y || a.team.name.localeCompare(b.team.name);
+      return x - y || teamLabel(a.team).localeCompare(teamLabel(b.team));
     });
     const counts = new Map();
     sorted.forEach(r => r[key] != null && counts.set(r[key], (counts.get(r[key]) || 0) + 1));
@@ -193,7 +193,14 @@
       <div class="scoreboard-bottom"><span>THE FIELD IS STILL TAKING SHAPE.</span><a href="#join">Interested in playing?</a></div></div>`;
   }
 
+  let rendering = false;
   function render() {
+    if (rendering) return; // replacing the page can fire a blur/input event that asks to render again
+    rendering = true;
+    try { draw(); } finally { rendering = false; }
+  }
+
+  function draw() {
     const d = state.data;
     if (!root) { // league.html: only the weekly highlights
       if (d && d.season) renderHighlights(d, buildModel(d));
@@ -276,7 +283,7 @@
 
     const searchList = (d.teams || []).map(t => {
       const lg = leaguesOf(d).find(l => l.id === t.league_id);
-      return `<option value="${esc(t.name)}">${esc(lg ? lg.name : '')}</option>`;
+      return `<option value="${esc(teamLabel(t))}">${esc(lg ? lg.name : '')}</option>`;
     }).join('');
 
     const chips = flighted ? `<div class="lb-flights" role="group" aria-label="Flights">
@@ -361,7 +368,7 @@
       return `<tr class="lb-row${state.hit === t.id ? ' lb-hit' : ''}" data-team="${esc(t.id)}">
         <td class="lb-pos">${r.pos == null ? '—' : (r.tied ? 'T' : '') + r.pos}${move}</td>
         <th scope="row" class="lb-name"><button type="button" class="lb-expand" aria-expanded="${open}" aria-controls="lb-d-${esc(t.id)}">
-          <span class="lb-team">${esc(t.name)}</span>${!individual && t.captain ? `<span class="lb-captain">Capt. ${esc(t.captain)}</span>` : ''}
+          <span class="lb-team">${esc(teamLabel(t))}</span>${!individual && t.name && t.captain ? `<span class="lb-captain">Capt. ${esc(t.captain)}</span>` : ''}
         </button></th>
         <td class="lb-topar ${toPar < 0 ? 'lb-under' : ''}">${formatToPar(toPar)}</td>
         <td class="lb-strokes">${total ?? ''}${total != null ? `<span class="lb-rounds">${rounds} ${playoff ? 'counted' : 'played'}</span>` : ''}</td>
@@ -480,7 +487,11 @@
     }));
     const search = root.querySelector('.lb-search input');
     if (search) {
-      search.addEventListener('change', () => findTeam(search.value));
+      // Picking a name from the suggestions jumps straight to it.
+      search.addEventListener('input', () => {
+        const v = search.value.trim().toLowerCase();
+        if (v && (state.data?.teams || []).some(t => teamLabel(t).toLowerCase() === v)) findTeam(search.value);
+      });
       search.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); findTeam(search.value); } });
     }
     root.querySelector('.lb-season select')?.addEventListener('change', e => {
@@ -512,7 +523,8 @@
     const q = query.trim().toLowerCase();
     if (!q) return;
     const teams = state.data?.teams || [];
-    const team = teams.find(t => t.name.toLowerCase() === q) || teams.find(t => t.name.toLowerCase().includes(q));
+    const label = t => teamLabel(t).toLowerCase();
+    const team = teams.find(t => label(t) === q) || teams.find(t => label(t).includes(q) || (t.captain || '').toLowerCase().includes(q));
     const search = root.querySelector('.lb-search input');
     if (!team) {
       search?.setCustomValidity('No match found');
