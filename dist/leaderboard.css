@@ -1,4 +1,12 @@
-/* Live league leaderboard (league.html, "Follow the field") */
+/* Live league leaderboard (leaderboard.html) */
+.leaderboard-page .section{padding-left:max(4%,calc((100% - 1400px)/2));padding-right:max(4%,calc((100% - 1400px)/2))}
+.leaderboard-page .lb-hero{display:grid;grid-template-columns:1fr 1fr;gap:6%;align-items:end;background:#f6f6ef;padding-top:56px;padding-bottom:36px}
+.leaderboard-page .lb-hero h1{font-size:clamp(54px,6vw,88px);letter-spacing:-3px;line-height:1.02;margin:22px 0 0;white-space:normal}
+.leaderboard-page .lb-hero h1 span{color:var(--brand-dark)}
+.leaderboard-page .lb-hero-copy p{font-size:18px;line-height:1.75;color:var(--muted);max-width:520px;margin:0 0 20px}
+.leaderboard-page .lb-hero-copy .text-link{font-size:14px}
+.leaderboard-page .league-standings{padding-top:0}
+@media(max-width:760px){.leaderboard-page .section{padding-left:4%;padding-right:4%}.leaderboard-page .lb-hero{grid-template-columns:1fr;gap:12px;padding-top:26px;padding-bottom:20px}.leaderboard-page .lb-hero h1{font-size:44px;letter-spacing:-2px;margin-top:14px}.leaderboard-page .lb-hero-copy p{font-size:15px;line-height:1.6;margin-bottom:12px}}
 .lb{--lb-paper:#fbfbf5;--lb-line:#e3e8dc;--lb-red:#c4232f;--lb-head:#eef2e8;--lb-low:#e6f3cf;overflow:hidden}
 .lb .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .league-page .lb .scoreboard-top{flex-wrap:wrap}
@@ -79,6 +87,9 @@
 .lb-table td.lb-dropped,.lb-detail li.lb-dropped strong{color:#a3ada5;font-weight:400;text-decoration:line-through}
 .lb-table td.lb-dropped:before{display:none}
 .lb-detail{display:none}
+.lb-table td.lb-missed,.lb-table td.lb-last.lb-missed{color:#98a39a;font-style:italic;font-weight:400}
+.lb-detail li.lb-missed{color:#8a968c;font-style:italic}
+.lb-key-missed{color:#a9bfa8;font-style:italic!important;font-weight:400!important}
 .lb-hit>*{animation:lb-flash 2.4s ease}
 @keyframes lb-flash{0%,60%{background:#fff3b8}100%{background:inherit}}
 

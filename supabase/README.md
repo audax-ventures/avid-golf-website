@@ -1,8 +1,8 @@
 # League leaderboard setup (Supabase)
 
-The live leaderboard on `league.html` and the admin page at `/league-admin` store their data in Supabase. Setup takes about 10 minutes and only needs doing once.
+The live leaderboard page (`leaderboard.html`) and the admin page at `/league-admin` store their data in Supabase. Setup takes about 10 minutes and only needs doing once.
 
-Until these steps are done, the League page keeps showing its "A fresh season" placeholder, so nothing breaks in the meantime.
+Until these steps are done, the leaderboard page shows an "A fresh season" placeholder, so nothing breaks in the meantime.
 
 ## 1. Create the project
 
@@ -56,10 +56,14 @@ These two values are meant to be public. The database rules from `schema.sql` ar
 ## Using it
 
 - **Admin page:** `/league-admin`. It isn't linked anywhere on the site, and search engines are told not to list it.
-- **Preview with sample data:** add `?preview=demo` to the League page address, e.g. `/league?preview=demo#standings`.
+- **Leaderboard page:** `/leaderboard` (linked as "League Leaderboard" in the menu). Add `?preview=demo` to see it with sample data.
 - **Season order:** create the season (it comes with 16 weeks) → add courses under *Weeks & courses* → add leagues and teams → enter scores → turn the week to **Live** when it's ready to show.
 - **Flights:** add flights to a league and assign teams whenever you're ready. Until at least one team is in a flight, the site shows a single leaderboard for that league.
-- **Playoff race:** the leaderboard's "Playoff race" view counts each team's lowest 10 weekly scores. The number is changeable under *Season settings*.
+- **Ranking:** teams are ranked by total score to par, so every week needs its course's par.
+- **Missed weeks:** by default a missed week (after a team's first round) counts as the highest score posted that week in the team's league, so nobody gains by skipping. You can switch to "leave blank" or add penalty strokes under *Season settings*.
+- **Playoff race:** the leaderboard's "Playoff race" view counts each team's best 10 weeks against par. The number is changeable under *Season settings*.
+
+If you ran `schema.sql` before the missed-week setting was added, run it again; it's safe to re-run and only adds what's missing.
 
 ## Free plan note
 

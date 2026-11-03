@@ -268,7 +268,7 @@
     app.replaceChildren(
       h('div', { class: 'adm-bar' },
         h('label', { class: 'adm-season' }, h('span', null, 'Season'), seasonSelect),
-        h('a', { class: 'adm-link', href: 'league.html#standings', target: '_blank', rel: 'noopener' }, 'View leaderboard ↗')),
+        h('a', { class: 'adm-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, 'View leaderboard ↗')),
       nav,
       h('section', { class: 'adm-card', role: 'tabpanel' }, (views[S.tab] || viewSchedule)()));
   }
@@ -580,7 +580,7 @@
     });
 
     return [
-      intro('Scores', 'Type each gross score and press Enter to move down to the next team. Scores save on their own. Leave a box empty if a team missed the week. Turn a week to “Live” when its scores are ready to show on the website.'),
+      intro('Scores', 'Type each gross score and press Enter to move down to the next team. Scores save on their own. Leave a box empty if a team missed the week; the leaderboard applies the missed-week rule from Season settings. Turn a week to “Live” when its scores are ready to show on the website.'),
       h('div', { class: 'adm-toolbar' }, pills, h('div', { class: 'adm-toolbar-right' }, flightFilter, jump, exportBtn)),
       wrap
     ];
@@ -763,6 +763,23 @@
       if ((await run(S.sb.from('seasons').update({ counting_rounds: v }).eq('id', s.id), counting)).ok) s.counting_rounds = v;
     });
 
+    const rule = h('select', { 'aria-label': 'Missed weeks' },
+      h('option', { value: 'worst', selected: (s.missed_rule || 'worst') === 'worst' }, 'Count as the week’s highest score in the league (recommended)'),
+      h('option', { value: 'blank', selected: s.missed_rule === 'blank' }, 'Leave blank (not counted)'));
+    const penalty = h('input', { type: 'number', min: 0, max: 20, value: s.missed_penalty || 0, class: 'adm-num', 'aria-label': 'Extra strokes for a missed week' });
+    const penaltyLabel = h('label', { hidden: s.missed_rule === 'blank' }, 'Extra strokes added to a missed week', penalty, h('small', null, 'Optional. 0 means the missed week counts exactly as the week’s highest score.'));
+    rule.addEventListener('change', async () => {
+      if ((await run(S.sb.from('seasons').update({ missed_rule: rule.value }).eq('id', s.id), rule)).ok) {
+        s.missed_rule = rule.value;
+        penaltyLabel.hidden = rule.value === 'blank';
+      }
+    });
+    penalty.addEventListener('change', async () => {
+      const v = parseInt(penalty.value, 10);
+      if (!(v >= 0 && v <= 20)) { penalty.value = s.missed_penalty || 0; return; }
+      if ((await run(S.sb.from('seasons').update({ missed_penalty: v }).eq('id', s.id), penalty)).ok) s.missed_penalty = v;
+    });
+
     const current = s.is_current
       ? h('p', { class: 'adm-ok-text' }, '✓ This is the season the website shows.')
       : h('button', {
@@ -785,7 +802,9 @@
       h('div', { class: 'adm-fields stacked' },
         h('label', null, 'Season name', name),
         h('label', null, 'Number of weeks', weeks),
-        h('label', null, 'Weeks that count for playoff standings', counting, h('small', null, 'Each team’s lowest scores, e.g. best 10 of 16.'))),
+        h('label', null, 'Weeks that count for playoff standings', counting, h('small', null, 'Each team’s best weeks against par, e.g. best 10 of 16.')),
+        h('label', null, 'Missed weeks', rule, h('small', null, 'With the recommended rule, a team that misses a week (after its first round) is given the highest score anyone in its league posted that week, so no one gains by skipping. Weeks before a team’s first round stay blank, for teams that join late.')),
+        penaltyLabel),
       h('h3', null, 'On the website'), current,
       newSeasonForm(s),
       h('h3', null, 'Delete'), h('p', { class: 'adm-muted small' }, 'Past seasons stay viewable on the website unless you delete them.'), del
@@ -828,7 +847,7 @@
     if (!name) return null;
     const first = !S.seasons.length;
     const weekCount = copyFrom?.week_count || 16;
-    const res = await run(S.sb.from('seasons').insert({ name, is_current: first, week_count: weekCount, counting_rounds: copyFrom?.counting_rounds || 10 }).select().single());
+    const res = await run(S.sb.from('seasons').insert({ name, is_current: first, week_count: weekCount, counting_rounds: copyFrom?.counting_rounds || 10, missed_rule: copyFrom?.missed_rule || 'worst', missed_penalty: copyFrom?.missed_penalty || 0 }).select().single());
     if (!res.ok) return null;
     const sid = res.data.id;
     await run(S.sb.from('weeks').insert(Array.from({ length: weekCount }, (_, i) => ({ season_id: sid, week_number: i + 1 }))));

@@ -31,6 +31,13 @@ create table if not exists public.seasons (
   counting_rounds int not null default 10 check (counting_rounds between 1 and 30),
   created_at timestamptz not null default now()
 );
+-- How a missed week counts: 'worst' = the highest score posted that week in the
+-- team's league (plus missed_penalty strokes); 'blank' = left out of the total.
+alter table public.seasons add column if not exists missed_rule text not null default 'worst'
+  check (missed_rule in ('worst', 'blank'));
+alter table public.seasons add column if not exists missed_penalty int not null default 0
+  check (missed_penalty between 0 and 20);
+
 -- Only one season can be the current one.
 create unique index if not exists seasons_one_current on public.seasons (is_current) where is_current;
 
