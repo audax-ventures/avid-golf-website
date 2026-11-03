@@ -140,17 +140,74 @@
   }
 
   function card(title, ...body) {
+    document.body.classList.remove('adm-auth-mode');
     return h('section', { class: 'adm-card adm-narrow' }, h('h1', null, title), body);
+  }
+
+  /* ---------- Sign-in screens ---------- */
+
+  const ICONS = {
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.6 5.6A9.7 9.7 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-2.6 3.4M6.3 6.9C3.9 8.6 2.5 12 2.5 12s3.5 6.5 9.5 6.5a9 9 0 0 0 4.4-1.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m3 3 18 18"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+  };
+  function icon(name, cls) {
+    const span = h('span', { class: 'adm-ico ' + (cls || ''), 'aria-hidden': 'true' });
+    span.innerHTML = ICONS[name]; // fixed markup above, no user data
+    return span;
+  }
+
+  // Input with an icon on the left; password inputs also get a show/hide button.
+  function iconField(iconName, input) {
+    const wrap = h('div', { class: 'adm-field' }, icon(iconName, 'lead'), input);
+    if (input.type === 'password') {
+      const toggle = h('button', { type: 'button', class: 'adm-eye', 'aria-label': 'Show password', 'aria-pressed': 'false' }, icon('eye'));
+      toggle.addEventListener('click', () => {
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        toggle.setAttribute('aria-pressed', String(show));
+        toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        toggle.replaceChildren(icon(show ? 'eyeOff' : 'eye'));
+        input.focus();
+      });
+      wrap.append(toggle);
+    }
+    return wrap;
+  }
+
+  // Split screen: golf photo on the left, form on the right.
+  function authScreen(title, subtitle, form) {
+    document.body.classList.add('adm-auth-mode');
+    const curves = h('span', { class: 'adm-auth-curves', 'aria-hidden': 'true' });
+    curves.innerHTML = '<svg viewBox="0 0 400 400" fill="none" stroke="currentColor" stroke-width="1"><path d="M400 20C300 60 230 160 190 260S90 390 0 400"/><path d="M400 60C310 95 250 185 215 280S120 400 40 410"/><path d="M400 100C320 130 270 210 240 300S150 410 80 420"/></svg>';
+    return h('div', { class: 'adm-auth' },
+      h('aside', { class: 'adm-auth-photo' },
+        h('div', { class: 'adm-auth-brand' },
+          h('img', { src: 'assets/logo.png', alt: 'AVID Golf', width: 72, height: 71 }),
+          h('span', { class: 'adm-auth-divider', 'aria-hidden': 'true' }),
+          h('span', { class: 'adm-auth-kicker' }, 'League admin')),
+        h('div', { class: 'adm-auth-pitch' },
+          h('p', { class: 'adm-auth-headline' }, 'Better Golf.', h('br'), 'Together.'),
+          h('p', { class: 'adm-auth-tags' }, 'League leaderboards', h('span', { 'aria-hidden': 'true' }, ' / '), 'Scores', h('span', { 'aria-hidden': 'true' }, ' / '), 'Teams'))),
+      h('section', { class: 'adm-auth-panel' },
+        h('div', { class: 'adm-auth-inner' },
+          h('a', { class: 'adm-auth-logo', href: 'index.html', 'aria-label': 'AVID Golf home' }, h('img', { src: 'assets/logo.png', alt: 'AVID Golf', width: 110, height: 108 })),
+          h('h1', null, title),
+          h('p', { class: 'adm-auth-sub' }, subtitle),
+          form),
+        curves));
   }
 
   function showLogin(message) {
     account.replaceChildren();
-    const email = h('input', { type: 'email', id: 'adm-email', autocomplete: 'username', required: true });
-    const pass = h('input', { type: 'password', id: 'adm-pass', autocomplete: 'current-password', required: true });
+    const email = h('input', { type: 'email', id: 'adm-email', autocomplete: 'username', placeholder: 'Enter your email address', required: true });
+    const pass = h('input', { type: 'password', id: 'adm-pass', autocomplete: 'current-password', placeholder: 'Enter your password', required: true });
     const msg = h('p', { class: 'adm-form-msg', role: 'alert' }, message || '');
-    const btn = h('button', { class: 'adm-btn', type: 'submit' }, 'Sign in');
+    const btn = h('button', { class: 'adm-btn adm-auth-btn', type: 'submit' }, h('span', null, 'Sign in'), icon('arrow'));
     const form = h('form', {
-      class: 'adm-form', onSubmit: async e => {
+      class: 'adm-form adm-auth-form', onSubmit: async e => {
         e.preventDefault();
         btn.disabled = true;
         msg.textContent = '';
@@ -165,25 +222,25 @@
         await signedIn(data.user);
       }
     },
-    h('label', { for: 'adm-email' }, 'Email'), email,
-    h('label', { for: 'adm-pass' }, 'Password'), pass,
+    h('label', { for: 'adm-email' }, 'Email'), iconField('mail', email),
+    h('label', { for: 'adm-pass' }, 'Password'), iconField('lock', pass),
     msg, btn,
     h('button', {
-      type: 'button', class: 'adm-link', onClick: async () => {
+      type: 'button', class: 'adm-link adm-auth-forgot', onClick: async () => {
         if (!email.value.trim()) { msg.textContent = 'Enter your email first, then choose “Forgot password”.'; email.focus(); return; }
         const { error } = await S.sb.auth.resetPasswordForEmail(email.value.trim(), { redirectTo: location.origin + location.pathname });
         msg.textContent = error ? 'Couldn’t send the email: ' + error.message : 'Check your inbox for a link to set a new password.';
       }
     }, 'Forgot password?'));
-    app.replaceChildren(card('League admin', h('p', { class: 'adm-muted' }, 'Sign in to manage leagues, teams and scores.'), form));
+    app.replaceChildren(authScreen('League Admin', 'Sign in to manage leagues, teams and scores.', form));
     email.focus();
   }
 
   function showNewPassword() {
-    const pass = h('input', { type: 'password', id: 'adm-new', autocomplete: 'new-password', minlength: 8, required: true });
+    const pass = h('input', { type: 'password', id: 'adm-new', autocomplete: 'new-password', placeholder: 'At least 8 characters', minlength: 8, required: true });
     const msg = h('p', { class: 'adm-form-msg', role: 'alert' });
-    app.replaceChildren(card('Set a new password', h('form', {
-      class: 'adm-form', onSubmit: async e => {
+    const form = h('form', {
+      class: 'adm-form adm-auth-form', onSubmit: async e => {
         e.preventDefault();
         const { data, error } = await S.sb.auth.updateUser({ password: pass.value });
         if (error) { msg.textContent = error.message; return; }
@@ -191,12 +248,15 @@
         toast('Password updated');
         await signedIn(data.user);
       }
-    }, h('label', { for: 'adm-new' }, 'New password (at least 8 characters)'), pass, msg, h('button', { class: 'adm-btn', type: 'submit' }, 'Save password'))));
+    }, h('label', { for: 'adm-new' }, 'New password'), iconField('lock', pass), msg,
+      h('button', { class: 'adm-btn adm-auth-btn', type: 'submit' }, h('span', null, 'Save password'), icon('arrow')));
+    app.replaceChildren(authScreen('Set a new password', 'Choose a new password for your admin account.', form));
     pass.focus();
   }
 
   async function signedIn(user) {
     S.user = user;
+    document.body.classList.remove('adm-auth-mode');
     account.replaceChildren(
       h('span', { id: 'adm-saving', class: 'adm-saving' }, 'All changes saved'),
       h('span', { class: 'adm-who' }, user.email),
