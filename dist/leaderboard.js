@@ -226,22 +226,24 @@
     if (state.tab !== CTP_TAB && !leagues.some(l => l.id === state.tab)) state.tab = leagues[0].id;
     if (state.tab === CTP_TAB && !hasCtp && !d.weeks.length) state.tab = leagues[0].id;
 
-    const status = m.latestWeek ? `Through week ${m.latestWeek} of ${m.weekCount}` : 'Season starting soon';
     const tabs = leagues.map(l => tabButton(l.id, l.name)).join('') + tabButton(CTP_TAB, 'Closest to the pin');
+    const view = state.tab === CTP_TAB ? { tools: '', body: renderCtp(d, m) } : renderLeague(d, m, leagues.find(l => l.id === state.tab));
+    renderHero(d, m);
 
     root.innerHTML = `<div class="league-scoreboard lb">
-      <div class="scoreboard-top lb-top">
-        <span>AVID / LEAGUE STANDINGS${demo ? ' · SAMPLE DATA' : ''}</span>
-        <span class="lb-status">
-          <span class="board-status">${state.live || demo ? '<span class="lb-live" aria-hidden="true"></span>Live · ' : ''}${esc(status)}</span>
-          <span class="lb-updated" data-updated="${m.updated || ''}">${updatedText(m.updated)}</span>
-        </span>
-      </div>
-      <div class="lb-controls">
-        <div class="lb-tabs" role="tablist" aria-label="Leagues">${tabs}</div>
+      <div class="lb-head">
+        <div class="lb-head-top">
+          <div class="lb-tabs" role="tablist" aria-label="Leagues">${tabs}</div>
+          <div class="lb-status">
+            ${demo ? '<span class="lb-sample">Sample data</span>' : ''}
+            <span class="lb-live-chip${state.live || demo ? ' on' : ''}">${state.live || demo ? '<span class="lb-live" aria-hidden="true"></span>Live' : 'Standings'}</span>
+            <span class="lb-updated" data-updated="${m.updated || ''}">${updatedText(m.updated)}</span>
+          </div>
+        </div>
+        ${view.tools ? `<div class="lb-head-tools">${view.tools}</div>` : ''}
       </div>
       <div class="lb-panel" role="tabpanel" id="lb-panel" aria-labelledby="lb-tab-${esc(state.tab)}">
-        ${state.tab === CTP_TAB ? renderCtp(d, m) : renderLeague(d, m, leagues.find(l => l.id === state.tab))}
+        ${view.body}
       </div>
       <div class="scoreboard-bottom lb-bottom">
         <span class="lb-legend">${state.tab === CTP_TAB ? 'ONE WINNER PER PAR 3, EVERY WEEK, ACROSS ALL LEAGUES.' :
@@ -258,6 +260,21 @@
       }
     }
     renderHighlights(d, m);
+  }
+
+  // Season facts in the page header above the board.
+  function renderHero(d, m) {
+    const box = document.getElementById('lb-hero-stats');
+    const season = document.getElementById('lb-hero-season');
+    if (season) season.textContent = d.season.name;
+    if (!box) return;
+    const stat = (value, label) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+    const aces = (d.aces || []).length;
+    box.innerHTML = stat(m.latestWeek ? `${m.latestWeek}<small>/${m.weekCount}</small>` : `0<small>/${m.weekCount}</small>`, 'Weeks played')
+      + stat(leaguesOf(d).length, leaguesOf(d).length === 1 ? 'League' : 'Leagues')
+      + stat((d.teams || []).length, 'Teams &amp; players')
+      + (aces ? stat(aces, aces === 1 ? 'Hole in one' : 'Hole in ones') : '');
+    box.hidden = false;
   }
 
   function tabButton(id, name) {
@@ -302,7 +319,7 @@
           <button type="button" data-view="total" aria-pressed="${state.view === 'total'}">Season total</button>
           <button type="button" data-view="playoff" aria-pressed="${state.view === 'playoff'}">Playoff race · best ${m.counting}</button>
         </div>
-        <label class="lb-search"><span class="sr-only">Find a ${individual ? 'player' : 'team'}</span>
+        <label class="lb-search"><span class="sr-only">Find a ${individual ? 'player' : 'team'}</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
           <input type="search" list="lb-team-list" placeholder="Find my ${individual ? 'name' : 'team'}" autocomplete="off">
           <datalist id="lb-team-list">${searchList}</datalist>
         </label>
@@ -310,7 +327,7 @@
     </div>`;
 
     if (!teams.length) {
-      return toolbar + `<p class="lb-empty">${individual ? 'Players' : 'Teams'} for this league will appear here soon.</p>`;
+      return { tools: toolbar, body: `<p class="lb-empty">${individual ? 'Players' : 'Teams'} for this league will appear here soon.</p>` };
     }
 
     const low = lowRounds(teams, m);
@@ -327,10 +344,10 @@
     const playoffNote = state.view === 'playoff'
       ? `<p class="lb-note">Playoff standings count each ${individual ? 'player' : 'team'}’s best ${m.counting} weeks, measured against par. Rounds that don’t count are crossed out.</p>` : '';
 
-    return toolbar + playoffNote + groups.map(g => `<div class="lb-group">
+    return { tools: toolbar, body: playoffNote + groups.map(g => `<div class="lb-group">
         ${g.title ? `<h3 class="lb-group-title">${esc(g.title)}<span>${g.teams.length} ${individual ? 'player' : 'team'}${g.teams.length === 1 ? '' : 's'}</span></h3>` : ''}
         ${renderTable(g.teams, m, low, league, g.title)}
-      </div>`).join('');
+      </div>`).join('') };
   }
 
   function chip(id, name) {
