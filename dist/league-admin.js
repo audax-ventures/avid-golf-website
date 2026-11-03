@@ -140,7 +140,8 @@
   }
 
   function card(title, ...body) {
-    document.body.classList.remove('adm-auth-mode');
+    document.body.classList.remove('adm-auth-mode', 'adm-app-mode');
+    dockAccount();
     return h('section', { class: 'adm-card adm-narrow' }, h('h1', null, title), body);
   }
 
@@ -180,6 +181,8 @@
   // Split screen: golf photo on the left, form on the right.
   function authScreen(title, subtitle, form) {
     document.body.classList.add('adm-auth-mode');
+    document.body.classList.remove('adm-app-mode');
+    dockAccount();
     const curves = h('span', { class: 'adm-auth-curves', 'aria-hidden': 'true' });
     curves.innerHTML = '<svg viewBox="0 0 400 400" fill="none" stroke="currentColor" stroke-width="1"><path d="M400 20C300 60 230 160 190 260S90 390 0 400"/><path d="M400 60C310 95 250 185 215 280S120 400 40 410"/><path d="M400 100C320 130 270 210 240 300S150 410 80 420"/></svg>';
     return h('div', { class: 'adm-auth' },
@@ -257,6 +260,7 @@
   async function signedIn(user) {
     S.user = user;
     document.body.classList.remove('adm-auth-mode');
+    dockAccount();
     account.replaceChildren(
       h('span', { id: 'adm-saving', class: 'adm-saving' }, 'All changes saved'),
       h('span', { class: 'adm-who' }, user.email),
@@ -317,21 +321,67 @@
 
   /* ---------- Layout ---------- */
 
+  const NAV_ICONS = {
+    schedule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+    leagues: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><circle cx="17" cy="9.5" r="2.4"/><path d="M16.2 14.4c2.5.2 4.2 1.9 4.8 4.6"/></svg>',
+    scores: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9.5h17M3.5 15h17M9.5 3.5v17M15 3.5v17"/></svg>',
+    ctp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21V3.5l9 3.8-9 3.9"/><ellipse cx="11" cy="20.5" rx="7" ry="1.6"/></svg>',
+    season: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>',
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg>'
+  };
+  function svgIcon(markup, cls) {
+    const span = h('span', { class: 'adm-ico ' + (cls || ''), 'aria-hidden': 'true' });
+    span.innerHTML = markup; // fixed markup above, no user data
+    return span;
+  }
+
+  // The account box (saving status, email, sign out) lives in the top bar,
+  // or in the sidebar once the admin area is showing.
+  function dockAccount(target) {
+    const dock = target || document.querySelector('.adm-header');
+    if (dock && account.parentElement !== dock) dock.append(account);
+  }
+
   function renderShell() {
+    document.body.classList.add('adm-app-mode');
+    const s = season();
     const seasonSelect = h('select', {
-      id: 'adm-season-select', onChange: e => { S.seasonId = e.target.value; loadSeason(); }
-    }, S.seasons.map(s => h('option', { value: s.id, selected: s.id === S.seasonId }, s.name + (s.is_current ? ' (current)' : ''))));
-    const nav = h('nav', { class: 'adm-tabs', role: 'tablist', 'aria-label': 'Admin sections' },
+      id: 'adm-season-select', 'aria-label': 'Season', onChange: e => { S.seasonId = e.target.value; loadSeason(); }
+    }, S.seasons.map(x => h('option', { value: x.id, selected: x.id === S.seasonId }, x.name + (x.is_current ? ' (current)' : ''))));
+    const nav = h('nav', { class: 'adm-tabs', role: 'tablist', 'aria-label': 'Admin sections', 'aria-orientation': 'vertical' },
       TABS.map(([id, label]) => h('button', {
         role: 'tab', class: 'adm-tab', 'aria-selected': String(S.tab === id), onClick: () => { S.tab = id; sessionSet('adm-tab', id); renderShell(); }
-      }, label)));
+      }, svgIcon(NAV_ICONS[id]), h('span', null, label))));
     const views = { schedule: viewSchedule, leagues: viewLeagues, scores: viewScores, ctp: viewCtp, season: viewSeason };
-    app.replaceChildren(
-      h('div', { class: 'adm-bar' },
+    const nodes = [(views[S.tab] || viewSchedule)()].flat();
+    const head = nodes[0]?.classList?.contains('adm-intro') ? nodes.shift() : null;
+    const live = S.weeks.filter(w => w.published).length;
+    const stats = h('div', { class: 'adm-stats', 'aria-label': 'Season at a glance' },
+      h('span', null, h('strong', null, S.leagues.length), S.leagues.length === 1 ? ' league' : ' leagues'),
+      h('span', null, h('strong', null, S.teams.length), S.teams.length === 1 ? ' team' : ' teams'),
+      h('span', { class: live ? 'on' : '' }, h('strong', null, live), ` of ${S.weeks.length} weeks live`));
+    const footer = h('div', { class: 'adm-side-foot' },
+      h('a', { class: 'adm-side-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, svgIcon(NAV_ICONS.external), h('span', null, 'View leaderboard')));
+    app.replaceChildren(h('div', { class: 'adm-shell' },
+      h('aside', { class: 'adm-side' },
+        h('a', { class: 'adm-side-brand', href: 'index.html', 'aria-label': 'AVID Golf home' },
+          h('img', { src: 'assets/logo.png', alt: '', width: 56, height: 55 }),
+          h('span', null, 'AVID Golf', h('small', null, 'League admin'))),
         h('label', { class: 'adm-season' }, h('span', null, 'Season'), seasonSelect),
-        h('a', { class: 'adm-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, 'View leaderboard ↗')),
-      nav,
-      h('section', { class: 'adm-card', role: 'tabpanel' }, (views[S.tab] || viewSchedule)()));
+        nav,
+        footer),
+      h('div', { class: 'adm-content' },
+        h('header', { class: 'adm-pagehead' },
+          h('div', null,
+            h('span', { class: 'adm-eyebrow' }, s ? s.name : 'League admin'),
+            head ? head.querySelector('h2') : h('h2', null, 'League admin'),
+            head?.querySelector('p') || null),
+          stats),
+        h('section', { class: 'adm-card adm-main-card', role: 'tabpanel' }, nodes))));
+    dockAccount(footer);
+    // On phones the section menu scrolls sideways: keep the current section in view.
+    const active = nav.querySelector('[aria-selected="true"]');
+    if (active && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = active.offsetLeft - 16;
   }
 
   function intro(title, text) {
@@ -618,7 +668,7 @@
     teams.forEach((t, r) => {
       if (flights.length && S.scoreFlight === 'all' && t.flight_id !== currentFlight) {
         currentFlight = t.flight_id;
-        rows.push(h('tr', { class: 'adm-group' }, h('th', { colspan: S.weeks.length + 2, class: 'adm-sticky' }, byId(flights, t.flight_id)?.name || 'Not in a flight')));
+        rows.push(h('tr', { class: 'adm-group' }, h('th', { colspan: S.weeks.length + 2 }, h('span', null, byId(flights, t.flight_id)?.name || 'Not in a flight'))));
       }
       const total = h('td', { class: 'adm-total' });
       const cells = S.weeks.map((w, c) => {
@@ -981,6 +1031,8 @@
   }
 
   function showFirstSeason() {
+    document.body.classList.remove('adm-app-mode');
+    dockAccount();
     app.replaceChildren(h('section', { class: 'adm-card adm-narrow' },
       h('h1', null, 'Welcome'),
       h('p', null, 'Start by creating the season. It comes with 16 weeks; you’ll add courses, leagues and teams next.'),
