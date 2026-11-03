@@ -26,5 +26,25 @@
       "destination": "/",
       "permanent": false
     }
+  ],
+  "headers": [
+    {
+      "source": "/league-admin",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/league-admin.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }

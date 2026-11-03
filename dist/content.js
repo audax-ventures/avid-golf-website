@@ -9,7 +9,11 @@ window.AVID_CONTENT = {
   demoDays: [],
   // Add approved quotes only: {quote, name}.
   testimonials: [],
-  // Use the Google Sheets Publish to web EMBED URL for the public standings tab only.
+  // Live league leaderboard (Supabase > Project Settings > API).
+  // The anon public key is meant to be public; the database rules decide who can change scores.
+  supabaseUrl: '',
+  supabaseAnonKey: '',
+  // Older Google Sheets option, only used if Supabase is not set up.
   leaderboardEmbedUrl: '',
   leaderboardPublicUrl: '',
   // Add objects: {week, contest, winner, result}.

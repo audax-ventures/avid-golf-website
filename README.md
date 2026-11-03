@@ -31,7 +31,9 @@ Edit each page's HTML and its styles. Shared presentation and behaviour live in 
 
 To connect Toast gift cards, set `toastGiftCardUrl` in `dist/content.js`. Until then the existing gift-card checkout is used.
 
-To display league standings, publish only the intended public standings tab from Google Sheets and put its embed URL in `leaderboardEmbedUrl`. Optionally add `leaderboardPublicUrl` and entries in `weeklyWinners`. Never put private spreadsheet links, credentials, or API keys into client-side files.
+The League page has a live leaderboard with a hidden admin page at `/league-admin` for entering scores. Both run on Supabase; see [`supabase/README.md`](supabase/README.md) for the one-time setup. Add `?preview=demo` to the League page address to see it with sample data.
+
+Older option: to display league standings, publish only the intended public standings tab from Google Sheets and put its embed URL in `leaderboardEmbedUrl`. Optionally add `leaderboardPublicUrl` and entries in `weeklyWinners`. Never put private spreadsheet links, credentials, or API keys into client-side files.
 
 ## Current content and behaviour
 
