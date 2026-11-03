@@ -118,6 +118,17 @@ create table if not exists public.ctp_results (
   updated_at timestamptz not null default now()
 );
 
+-- Hole in ones, listed on the leaderboard's closest-to-the-pin tab.
+create table if not exists public.hole_in_ones (
+  id uuid primary key default gen_random_uuid(),
+  season_id uuid not null references public.seasons on delete cascade,
+  player text not null,
+  hole int not null check (hole between 1 and 18),
+  course text not null default '',
+  play_date date,
+  created_at timestamptz not null default now()
+);
+
 create or replace function public.touch_updated_at()
 returns trigger
 language plpgsql
@@ -141,6 +152,7 @@ create index if not exists flights_league on public.flights (league_id);
 create index if not exists teams_league on public.teams (league_id);
 create index if not exists scores_week on public.scores (week_id);
 create index if not exists ctp_week on public.ctp_results (week_id);
+create index if not exists aces_season on public.hole_in_ones (season_id);
 
 -- Permissions -----------------------------------------------------------------
 
@@ -152,12 +164,13 @@ alter table public.flights enable row level security;
 alter table public.teams enable row level security;
 alter table public.scores enable row level security;
 alter table public.ctp_results enable row level security;
+alter table public.hole_in_ones enable row level security;
 
 grant usage on schema public to anon, authenticated;
 grant select on public.seasons, public.weeks, public.leagues, public.flights,
-  public.teams, public.scores, public.ctp_results to anon, authenticated;
+  public.teams, public.scores, public.ctp_results, public.hole_in_ones to anon, authenticated;
 grant insert, update, delete on public.seasons, public.weeks, public.leagues,
-  public.flights, public.teams, public.scores, public.ctp_results to authenticated;
+  public.flights, public.teams, public.scores, public.ctp_results, public.hole_in_ones to authenticated;
 grant select on public.admins to authenticated;
 grant execute on function public.is_admin() to anon, authenticated;
 
@@ -169,7 +182,7 @@ create policy "Admins can see themselves" on public.admins
 do $$
 declare t text;
 begin
-  foreach t in array array['seasons', 'weeks', 'leagues', 'flights', 'teams'] loop
+  foreach t in array array['seasons', 'weeks', 'leagues', 'flights', 'teams', 'hole_in_ones'] loop
     execute format('drop policy if exists "Public read" on public.%I', t);
     execute format('create policy "Public read" on public.%I for select using (true)', t);
     execute format('drop policy if exists "Admin write" on public.%I', t);
@@ -200,7 +213,7 @@ create policy "Admin write" on public.ctp_results
 do $$
 declare t text;
 begin
-  foreach t in array array['seasons', 'weeks', 'leagues', 'flights', 'teams', 'scores', 'ctp_results'] loop
+  foreach t in array array['seasons', 'weeks', 'leagues', 'flights', 'teams', 'scores', 'ctp_results', 'hole_in_ones'] loop
     if not exists (
       select 1 from pg_publication_tables
       where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = t

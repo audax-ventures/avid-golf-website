@@ -47,7 +47,11 @@
       weekIds.length ? L.selectAll(() => sb.from('scores').select('*').in('week_id', weekIds).order('team_id')) : none,
       weekIds.length ? L.selectAll(() => sb.from('ctp_results').select('*').in('week_id', weekIds).order('hole')) : none
     ]);
-    return { seasons, season, weeks: weeks.data, leagues: leagues.data, flights, teams, scores, ctp };
+    // Hole in ones are optional: if the table isn't set up yet, the rest still loads.
+    const aces = await sb.from('hole_in_ones').select('*').eq('season_id', season.id)
+      .order('play_date', { ascending: false }).order('created_at', { ascending: false })
+      .then(r => r.error ? [] : r.data, () => []);
+    return { seasons, season, weeks: weeks.data, leagues: leagues.data, flights, teams, scores, ctp, aces };
   }
 
   async function load() {
@@ -410,13 +414,33 @@
     return list.filter(c => c.distance_in != null).sort((a, b) => a.distance_in - b.distance_in)[0];
   }
 
+  function formatDate(iso) {
+    if (!iso) return '';
+    const [y, mo, day] = iso.split('-').map(Number);
+    return new Date(y, mo - 1, day).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function renderAces(d) {
+    const aces = d.aces || [];
+    if (!aces.length) return '';
+    return `<section class="ace-board" aria-label="Hole in ones">
+      <header><span class="ace-label">Hole-in-one club</span><span class="ace-count">${aces.length} this season</span></header>
+      <ul>${aces.map(a => `<li>
+        <span class="ace-badge" aria-hidden="true">ACE</span>
+        <span class="ace-who"><strong>${esc(a.player)}</strong><span>Hole ${a.hole}${a.course ? ' · ' + esc(a.course) : ''}</span></span>
+        ${a.play_date ? `<time datetime="${esc(a.play_date)}">${esc(formatDate(a.play_date))}</time>` : ''}
+      </li>`).join('')}</ul>
+    </section>`;
+  }
+
   function renderCtp(d, m) {
     const list = ctpWinners(d, m);
-    if (!list.length) return `<p class="lb-empty">Closest to the pin winners will be posted here after each week’s play.</p>`;
+    const aces = renderAces(d);
+    if (!list.length) return aces + `<p class="lb-empty">Closest to the pin winners will be posted here after each week’s play.</p>`;
     const best = seasonBest(list);
     const bestWeek = best && m.weekById.get(best.week_id);
     const byWeek = [...m.weeks].reverse().map(w => ({ w, rows: list.filter(c => c.week_id === w.id).sort((a, b) => a.hole - b.hole) })).filter(g => g.rows.length);
-    return `${best ? `<div class="ctp-best">
+    return `${aces}${best ? `<div class="ctp-best">
         <span class="ctp-best-label">Closest of the season</span>
         <strong>${esc(best.player)}</strong>
         <span class="ctp-best-dist">${esc(formatDistance(best.distance_in))}</span>
@@ -433,7 +457,14 @@
     const box = document.getElementById('weekly-winners');
     if (!box) return;
     const list = ctpWinners(d, m);
-    if (!list.length) return;
+    const ace = (d.aces || [])[0];
+    if (!list.length && !ace) return;
+    const aceLine = ace ? `<p class="ctp-highlight-ace"><span class="ace-badge" aria-hidden="true">ACE</span><span><strong>Hole in one!</strong> ${esc(ace.player)}, hole ${ace.hole}${ace.course ? ' at ' + esc(ace.course) : ''}${ace.play_date ? ' · ' + esc(formatDate(ace.play_date)) : ''}</span></p>` : '';
+    if (!list.length) {
+      box.className = 'ctp-highlight';
+      box.innerHTML = `<span class="eyebrow">WINNERS CIRCLE</span>${aceLine}<a class="text-link" href="leaderboard.html${demo ? '?preview=demo' : ''}#standings/${CTP_TAB}">See the leaderboard</a>`;
+      return;
+    }
     const lastWeek = m.weeks.filter(w => list.some(c => c.week_id === w.id)).pop();
     const rows = list.filter(c => c.week_id === lastWeek.id).sort((a, b) => a.hole - b.hole);
     const best = seasonBest(list);
@@ -442,6 +473,7 @@
       <h3>${esc(lastWeek.course || 'This week’s winners')}</h3>
       <ul>${rows.map(c => `<li><span>Hole ${c.hole}</span><strong>${esc(c.player)}</strong><span>${esc(formatDistance(c.distance_in))}</span></li>`).join('')}</ul>
       ${best ? `<p class="ctp-highlight-best">Season best: <strong>${esc(best.player)}</strong>, ${esc(formatDistance(best.distance_in))}</p>` : ''}
+      ${aceLine}
       <a class="text-link" href="leaderboard.html${demo ? '?preview=demo' : ''}#standings/${CTP_TAB}" data-ctp-link>See every week</a>`;
     if (root) {
       box.querySelector('[data-ctp-link]').addEventListener('click', e => {
@@ -656,7 +688,8 @@
     const ctpNames = [...captains, ...players];
     const ctp = [];
     weeks.slice(0, playedWeeks).forEach(w => [3, 7, 12, 16].forEach(h => ctp.push({ id: `${w.id}-${h}`, week_id: w.id, hole: h, player: ctpNames[between(0, ctpNames.length - 1)], distance_in: between(14, 160), updated_at: new Date(now - 3.6e6).toISOString() })));
-    return { seasons: [season], season, weeks, leagues, flights, teams, scores, ctp };
+    const aces = [{ id: 'a1', season_id: 's1', player: 'Kelly Friesen', hole: 7, course: 'Banff Springs', play_date: '2026-12-09' }];
+    return { seasons: [season], season, weeks, leagues, flights, teams, scores, ctp, aces };
   }
 
   start();

@@ -146,6 +146,10 @@ textarea{width:100%;resize:vertical}
 .adm-dist span{font-size:13px;color:var(--muted);margin-right:6px}
 .adm-ctp+.adm-btn,.adm-table-wrap+.adm-btn{margin-top:14px}
 
+.adm-aces{margin-top:36px;padding-top:8px;border-top:1px solid var(--line)}
+.adm-ace-table td:first-child{min-width:200px;width:35%}
+.adm-ace-table td:nth-child(3){min-width:180px;width:30%}
+.adm-ace-form input[type=text]{flex:1 1 160px}
 .adm-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:min(560px,calc(100% - 32px));z-index:50;box-shadow:0 10px 30px #0003}
 .adm-toast.show{opacity:1;transform:translate(-50%,0)}
 .adm-toast.error{background:var(--red)}

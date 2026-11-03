@@ -11,7 +11,7 @@
     ['schedule', 'Weeks & courses'],
     ['leagues', 'Leagues & teams'],
     ['scores', 'Scores'],
-    ['ctp', 'Closest to the pin'],
+    ['ctp', 'Closest to the pin & aces'],
     ['season', 'Season settings']
   ];
 
@@ -20,7 +20,7 @@
     user: null,
     seasons: [],
     seasonId: null,
-    weeks: [], leagues: [], flights: [], teams: [], scores: [], ctp: [],
+    weeks: [], leagues: [], flights: [], teams: [], scores: [], ctp: [], aces: [],
     tab: sessionGet('adm-tab') || 'schedule',
     leagueId: null,
     scoreLeagueId: null,
@@ -227,9 +227,10 @@
     sessionSet('adm-season', S.seasonId);
     const sb = S.sb;
     try {
-      const [weeks, leagues] = await Promise.all([
+      const [weeks, leagues, aces] = await Promise.all([
         L.selectAll(() => sb.from('weeks').select('*').eq('season_id', S.seasonId).order('week_number')),
-        L.selectAll(() => sb.from('leagues').select('*').eq('season_id', S.seasonId).order('sort_order').order('created_at'))
+        L.selectAll(() => sb.from('leagues').select('*').eq('season_id', S.seasonId).order('sort_order').order('created_at')),
+        L.selectAll(() => sb.from('hole_in_ones').select('*').eq('season_id', S.seasonId).order('play_date', { ascending: false }).order('created_at'))
       ]);
       const lids = leagues.map(l => l.id), wids = weeks.map(w => w.id);
       const [flights, teams, scores, ctp] = await Promise.all([
@@ -238,7 +239,7 @@
         wids.length ? L.selectAll(() => sb.from('scores').select('*').in('week_id', wids).order('team_id')) : [],
         wids.length ? L.selectAll(() => sb.from('ctp_results').select('*').in('week_id', wids).order('hole')) : []
       ]);
-      Object.assign(S, { weeks, leagues, flights, teams, scores, ctp });
+      Object.assign(S, { weeks, leagues, flights, teams, scores, ctp, aces });
     } catch (err) {
       toast(friendlyError(err), 'error');
       return;
@@ -698,14 +699,68 @@
     }, '+ Add a par 3');
 
     return [
-      intro('Closest to the pin', 'One winner per par 3, across every league. Add each par 3 hole for the week, then the closest player and how far they were from the pin.'),
+      intro('Closest to the pin & hole in ones', 'One closest-to-the-pin winner per par 3, across every league. Add each par 3 hole for the week, then the closest player and how far they were from the pin. Hole in ones are further down.'),
       h('div', { class: 'adm-toolbar' }, h('label', { class: 'adm-filter' }, 'Week ', weekSelect), h('div', { class: 'adm-toolbar-right' }, publishToggle(week))),
       h('datalist', { id: 'adm-players' }, names.map(n => h('option', { value: n }))),
       entries.length ? h('div', { class: 'adm-table-wrap' }, h('table', { class: 'adm-table adm-ctp' },
         h('thead', null, h('tr', null, h('th', null, 'Hole'), h('th', null, 'Closest player'), h('th', null, 'Distance'), h('th', null, h('span', { class: 'sr-only' }, 'Delete')))),
         h('tbody', null, rows))) : h('p', { class: 'adm-muted' }, 'No par 3s added for this week yet.'),
-      addBtn
+      addBtn,
+      aceSection(week)
     ];
+  }
+
+  /* ---------- Hole in ones ---------- */
+
+  function aceSection(week) {
+    const courses = [...new Set(S.weeks.map(w => w.course).filter(Boolean))];
+    const rows = S.aces.map(a => aceRow(a));
+    const player = h('input', { type: 'text', list: 'adm-players', placeholder: 'Player name', required: true, 'aria-label': 'Hole in one player' });
+    const hole = h('input', { type: 'number', min: 1, max: 18, placeholder: 'Hole', required: true, class: 'adm-num', 'aria-label': 'Hole in one hole number' });
+    const course = h('input', { type: 'text', list: 'adm-courses', value: week.course || '', placeholder: 'Course', 'aria-label': 'Hole in one course' });
+    const date = h('input', { type: 'date', value: week.play_date || new Date().toLocaleDateString('en-CA'), 'aria-label': 'Hole in one date' });
+    const form = h('form', {
+      class: 'adm-inline-form adm-ace-form', onSubmit: async e => {
+        e.preventDefault();
+        const n = parseInt(hole.value, 10);
+        if (!player.value.trim() || !(n >= 1 && n <= 18)) { toast('Enter the player and a hole from 1 to 18.', 'error'); return; }
+        const row = { season_id: S.seasonId, player: player.value.trim(), hole: n, course: course.value.trim(), play_date: date.value || null };
+        const res = await run(S.sb.from('hole_in_ones').insert(row).select().single());
+        if (res.ok) { S.aces.unshift(res.data); toast(`Hole in one added for ${row.player} ⛳`); renderShell(); }
+      }
+    }, player, hole, course, date, h('button', { class: 'adm-btn small', type: 'submit' }, 'Add hole in one'));
+    return h('div', { class: 'adm-aces' },
+      h('h3', null, 'Hole in ones'),
+      h('p', { class: 'adm-muted small' }, 'These show on the leaderboard’s Closest to the pin tab as soon as they’re added.'),
+      h('datalist', { id: 'adm-courses' }, courses.map(c => h('option', { value: c }))),
+      rows.length ? h('div', { class: 'adm-table-wrap' }, h('table', { class: 'adm-table adm-ace-table' },
+        h('thead', null, h('tr', null, h('th', null, 'Player'), h('th', null, 'Hole'), h('th', null, 'Course'), h('th', null, 'Date'), h('th', null, h('span', { class: 'sr-only' }, 'Delete')))),
+        h('tbody', null, rows))) : h('p', { class: 'adm-muted' }, 'No hole in ones yet this season.'),
+      h('h3', null, 'Add a hole in one'),
+      form);
+  }
+
+  function aceRow(a) {
+    const save = (field, input, parse = v => v.trim()) => input.addEventListener('change', async () => {
+      const v = parse(input.value);
+      if (v === undefined) { input.value = a[field] ?? ''; return; }
+      if ((await run(S.sb.from('hole_in_ones').update({ [field]: v }).eq('id', a.id), input)).ok) a[field] = v;
+    });
+    const player = h('input', { type: 'text', value: a.player, list: 'adm-players', 'aria-label': 'Player' });
+    save('player', player, v => v.trim() || undefined);
+    const hole = h('input', { type: 'number', min: 1, max: 18, value: a.hole, class: 'adm-num', 'aria-label': 'Hole' });
+    save('hole', hole, v => { const n = parseInt(v, 10); return n >= 1 && n <= 18 ? n : undefined; });
+    const course = h('input', { type: 'text', value: a.course, list: 'adm-courses', 'aria-label': 'Course' });
+    save('course', course);
+    const date = h('input', { type: 'date', value: a.play_date || '', 'aria-label': 'Date' });
+    save('play_date', date, v => v || null);
+    const del = h('button', {
+      class: 'adm-icon', title: 'Delete', 'aria-label': `Delete ${a.player}’s hole in one`, onClick: async () => {
+        if (!confirm(`Remove ${a.player}’s hole in one?`)) return;
+        if ((await run(S.sb.from('hole_in_ones').delete().eq('id', a.id))).ok) { S.aces = S.aces.filter(x => x !== a); renderShell(); }
+      }
+    }, '✕');
+    return h('tr', null, h('td', null, player), h('td', null, hole), h('td', null, course), h('td', null, date), h('td', { class: 'adm-cell-icon' }, del));
   }
 
   function ctpRow(c) {
