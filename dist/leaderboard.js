@@ -103,6 +103,7 @@
 
   // A team's rounds. With the "worst" rule, a week the team missed (after its first round)
   // counts as the highest score posted that week in its league, plus any penalty strokes.
+  // The newest week is still being filled in, so a missing score there stays blank.
   function statsFor(team, m, uptoWeek) {
     const rounds = [];
     const firstWeek = Math.min(...m.weeks.filter(w => m.scoreMap.has(team.id + '|' + w.id)).map(w => w.week_number));
@@ -111,7 +112,8 @@
       const s = m.scoreMap.get(team.id + '|' + w.id);
       if (s != null) { rounds.push({ week: w, strokes: s }); continue; }
       const high = m.highs.get(team.league_id + '|' + w.id);
-      if (m.missedRule === 'worst' && high != null && w.week_number > firstWeek) {
+      const finished = w.week_number < Math.min(uptoWeek, m.latestWeek);
+      if (m.missedRule === 'worst' && finished && high != null && w.week_number > firstWeek) {
         rounds.push({ week: w, strokes: high + m.missedPenalty, missed: true });
       }
     }
@@ -342,7 +344,6 @@
       <th scope="col" class="lb-pos">Pos</th>
       <th scope="col" class="lb-name">${individual ? 'Player' : 'Team'}</th>
       <th scope="col" class="lb-topar"><span class="lb-long">To par</span><span class="lb-short" aria-hidden="true">+/−</span></th>
-      <th scope="col" class="lb-strokes">${playoff ? 'Best ' + m.counting : 'Total'}</th>
       <th scope="col" class="lb-last">${latest ? 'Wk ' + latest.week_number : 'Last'}</th>
       ${m.weeks.map(w => `<th scope="col" class="lb-week${w.published && w.week_number <= m.latestWeek ? '' : ' lb-upcoming'}">
         <span class="lb-wk">Wk ${w.week_number}</span>
@@ -354,7 +355,6 @@
     const body = rows.map(r => {
       const t = r.team;
       const open = state.expanded.has(t.id);
-      const total = playoff ? r.best : r.total;
       const toPar = playoff ? r.bestToPar : r.toPar;
       const move = r.move ? `<span class="lb-move ${r.move > 0 ? 'up' : 'down'}" aria-label="${r.move > 0 ? 'Up' : 'Down'} ${Math.abs(r.move)} since last week">${r.move > 0 ? '▲' : '▼'}${Math.abs(r.move)}</span>` : '';
       const last = latest ? r.byWeek.get(latest.id) : null;
@@ -364,18 +364,16 @@
         const dropped = playoff && !r.counted.has(w.id);
         return `<li class="${dropped ? 'lb-dropped' : ''}${missed ? ' lb-missed' : ''}"><span>Wk ${w.week_number}</span><span>${missed ? 'Missed week' : esc(w.course || 'Course TBA')}</span><strong class="${missed ? '' : parClass(s, w)}">${s}${w.par ? ` <small>(${formatToPar(s - w.par)})</small>` : ''}</strong></li>`;
       }).join('');
-      const rounds = playoff ? r.counted.size : r.played;
       return `<tr class="lb-row${state.hit === t.id ? ' lb-hit' : ''}" data-team="${esc(t.id)}">
         <td class="lb-pos">${r.pos == null ? '—' : (r.tied ? 'T' : '') + r.pos}${move}</td>
         <th scope="row" class="lb-name"><button type="button" class="lb-expand" aria-expanded="${open}" aria-controls="lb-d-${esc(t.id)}">
           <span class="lb-team">${esc(teamLabel(t))}</span>${!individual && t.name && t.captain ? `<span class="lb-captain">Capt. ${esc(t.captain)}</span>` : ''}
         </button></th>
         <td class="lb-topar ${toPar < 0 ? 'lb-under' : ''}">${formatToPar(toPar)}</td>
-        <td class="lb-strokes">${total ?? ''}${total != null ? `<span class="lb-rounds">${rounds} ${playoff ? 'counted' : 'played'}</span>` : ''}</td>
         <td class="lb-last ${last ? (last.missed ? 'lb-missed' : parClass(last.strokes, latest)) : ''}">${last ? last.strokes : ''}</td>
         ${cells}
       </tr>
-      <tr class="lb-detail" id="lb-d-${esc(t.id)}"${open ? '' : ' hidden'}><td colspan="5">
+      <tr class="lb-detail" id="lb-d-${esc(t.id)}"${open ? '' : ' hidden'}><td colspan="4">
         ${detail ? `<ul>${detail}</ul>` : '<p>No scores yet.</p>'}
       </td></tr>`;
     }).join('');
