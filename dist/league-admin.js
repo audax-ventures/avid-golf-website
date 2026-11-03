@@ -379,7 +379,7 @@
         h('div', { class: 'adm-season' },
           h('span', { class: 'adm-season-label' }, 'Season'),
           h('div', { class: 'adm-season-pick' },
-            h('strong', null, s ? s.name : ''),
+            h('strong', { title: s ? s.name : '' }, s ? s.name : ''),
             h('em', { class: s?.is_current ? '' : 'off' }, s?.is_current ? 'Shown on the website' : 'Not shown on the website'),
             svgIcon(NAV_ICONS.chevron, 'adm-season-chev'),
             seasonSelect)),
@@ -463,7 +463,6 @@
     // The week being worked on: the first one not on the website yet.
     const focus = S.weeks.find(w => !w.published) || S.weeks[S.weeks.length - 1];
     const lastLive = live[live.length - 1];
-    const firstName = (S.user?.email || '').split('@')[0];
 
     // Key numbers
     const tile = (label, value, sub, cls, meter) => h('div', { class: 'adm-kpi ' + (cls || '') },
@@ -542,7 +541,7 @@
     const ctpRows = ctpWeek ? S.ctp.filter(c => c.week_id === ctpWeek.id && c.player).sort((a, b) => a.hole - b.hole) : [];
 
     return [
-      intro('Dashboard', `Welcome back${firstName ? ', ' + firstName : ''}. Here’s where ${ss ? ss.name : 'the season'} stands.`),
+      intro('Dashboard', 'Welcome to the Avid Golf League.'),
       kpis,
       h('div', { class: 'adm-dash-grid' },
         h('section', { class: 'adm-panel' }, h('h3', null, focus && focus.published ? 'Latest week' : 'Up next'), weekPanel),
