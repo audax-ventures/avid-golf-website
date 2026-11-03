@@ -445,11 +445,13 @@
         onSubmit: async e => {
           e.preventDefault();
           const rows = bulk.value.split('\n').map(line => line.trim()).filter(Boolean).map(line => {
+            // Individual leagues: the whole line is the player's name (stray commas are ignored).
+            if (individual) return { league_id: league.id, name: line.replace(/^[\s,]+|[\s,]+$/g, ''), captain: '' };
             const [n, ...c] = line.split(',');
-            return { league_id: league.id, name: n.trim(), captain: individual ? '' : c.join(',').trim() };
+            return { league_id: league.id, name: n.trim(), captain: c.join(',').trim() };
           }).filter(r => r.name || r.captain);
-          if (!rows.length) return;
-          if ((await run(S.sb.from('teams').insert(rows))).ok) { toast(`Added ${rows.length}`); await loadSeason(); }
+          if (!rows.length) { toast(individual ? 'Type one player name per line.' : 'Type one team per line: Team name, Captain', 'error'); return; }
+          if ((await run(S.sb.from('teams').insert(rows))).ok) { toast(`Added ${rows.length}`); bulk.value = ''; await loadSeason(); }
         }
       }, bulk, h('button', { class: 'adm-btn small', type: 'submit' }, 'Add all')));
 
