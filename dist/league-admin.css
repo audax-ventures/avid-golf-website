@@ -129,6 +129,8 @@ textarea{width:100%;resize:vertical}
 .adm-week-head{min-width:92px;vertical-align:top}
 .adm-wk{display:block}
 .adm-course{display:block;max-width:96px;margin:3px auto 0;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.adm-par{display:block;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);margin-top:2px;border:0;background:none;padding:0;width:100%}
+.adm-par.missing{color:var(--warn);font-weight:700;text-decoration:underline;cursor:pointer}
 .adm-score{width:64px;text-align:center;padding:9px 4px;font-size:16px;font-weight:600}
 .adm-warn{border-color:var(--warn)!important;background:#fff6e5}
 .adm-col-on{background:#f4f9ef!important}

@@ -49,19 +49,21 @@
 .lb-short{display:none}
 
 /* Fixed columns on the left: position, team, total */
-.lb-table .lb-pos,.lb-table .lb-name,.lb-table .lb-total{position:sticky;z-index:1}
-.lb-table thead .lb-pos,.lb-table thead .lb-name,.lb-table thead .lb-total{z-index:2;background:var(--lb-head)}
+.lb-table .lb-pos,.lb-table .lb-name,.lb-table .lb-topar{position:sticky;z-index:1}
+.lb-table thead .lb-pos,.lb-table thead .lb-name,.lb-table thead .lb-topar{z-index:2;background:var(--lb-head)}
 .lb-table .lb-pos{left:0;width:64px;min-width:64px;font-weight:700;text-align:left;padding-left:16px}
 .lb-table .lb-name{left:64px;width:230px;min-width:230px;max-width:230px;text-align:left}
-.lb-table .lb-total{left:294px;width:74px;min-width:74px;font-size:18px;font-weight:700;border-right:2px solid var(--lb-line)}
-.lb-table thead .lb-total{font-size:11px}
+.lb-table .lb-topar{left:294px;width:74px;min-width:74px;font-size:18px;font-weight:700;border-right:2px solid var(--lb-line)}
+.lb-table thead .lb-topar{font-size:11px}
 .lb-table thead .lb-name{padding-left:8px}
 .lb-move{display:block;font-size:10px;font-weight:600;margin-top:3px;letter-spacing:.2px}
 .lb-move.up{color:#197a3e}.lb-move.down{color:#a8432f}
 .lb-expand{display:flex;flex-direction:column;gap:3px;width:100%;background:none;border:0;padding:14px 8px;text-align:left;color:inherit;cursor:default;min-width:0}
 .lb-team{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .lb-captain{font-size:12px;color:#6a786d;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.lb-par{min-width:64px;font-weight:600}
+.lb-strokes{min-width:64px;font-weight:600}
+.lb-rounds{display:block;font-size:10px;font-weight:400;color:#7d8a80;margin-top:2px}
+.lb-detail small{font-weight:400}
 .lb-last{display:none}
 .lb-week{min-width:76px;max-width:96px}
 .lb-wk{display:block;font-size:11px;letter-spacing:.8px}
@@ -135,11 +137,11 @@
   .lb-tools,.lb-search,.lb-search input{width:100%}
   .lb-view{width:100%}.lb-view button{flex:1;padding:10px 8px}
   .lb-table{font-size:14px}
-  .lb-table .lb-pos,.lb-table .lb-name,.lb-table .lb-total{position:static}
+  .lb-table .lb-pos,.lb-table .lb-name,.lb-table .lb-topar{position:static}
   .lb-table .lb-pos{width:38px;min-width:38px;padding-left:10px}
   .lb-table .lb-name{width:auto;min-width:0;max-width:none;white-space:normal}
-  .lb-table .lb-total{width:44px;min-width:44px;font-size:16px;border-right:0}
-  .lb-table .lb-par{min-width:42px;width:42px}
+  .lb-table .lb-topar{width:44px;min-width:44px;font-size:16px;border-right:0}
+  .lb-table .lb-strokes{min-width:42px;width:42px}
   .lb-week,.lb-score{display:none}
   .lb-table .lb-last{display:table-cell;min-width:40px;width:40px;padding-right:10px}
   .lb-scroll:after{display:none}

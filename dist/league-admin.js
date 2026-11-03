@@ -286,10 +286,15 @@
         const v = course.value.trim();
         if ((await run(S.sb.from('weeks').update({ course: v }).eq('id', w.id), course)).ok) w.course = v;
       });
-      const par = h('input', { type: 'number', min: 18, max: 200, value: w.par ?? '', placeholder: '72', class: 'adm-num', 'aria-label': `Week ${w.week_number} par` });
+      const needsPar = () => !w.par && S.scores.some(x => x.week_id === w.id);
+      const par = h('input', { type: 'number', min: 18, max: 200, value: w.par ?? '', placeholder: '72', class: 'adm-num' + (needsPar() ? ' adm-warn' : ''), 'aria-label': `Week ${w.week_number} par`, title: needsPar() ? 'This week has scores but no par, so it isn’t counted in the rankings yet.' : '' });
       par.addEventListener('change', async () => {
         const v = par.value === '' ? null : parseInt(par.value, 10);
-        if ((await run(S.sb.from('weeks').update({ par: v }).eq('id', w.id), par)).ok) w.par = v;
+        if ((await run(S.sb.from('weeks').update({ par: v }).eq('id', w.id), par)).ok) {
+          w.par = v;
+          par.classList.toggle('adm-warn', needsPar());
+          par.title = needsPar() ? 'This week has scores but no par, so it isn’t counted in the rankings yet.' : '';
+        }
       });
       const date = h('input', { type: 'date', value: w.play_date || '', 'aria-label': `Week ${w.week_number} date` });
       date.addEventListener('change', async () => {
@@ -302,7 +307,7 @@
         h('td', null, publishToggle(w)));
     });
     return [
-      intro('Weeks & courses', 'Every league plays the same course each week. Scores for a week only appear on the website once “Show on site” is turned on, so you can enter them first and publish when they’re all in.'),
+      intro('Weeks & courses', 'Every league plays the same course each week. Enter each course’s par: the leaderboard ranks teams by their score against par, so a week’s scores only count once it has a par. Scores for a week only appear on the website once “Show on site” is turned on, so you can enter them first and publish when they’re all in.'),
       h('div', { class: 'adm-table-wrap' }, h('table', { class: 'adm-table' },
         h('thead', null, h('tr', null, h('th', null, 'Week'), h('th', null, 'Course'), h('th', null, 'Par'), h('th', null, 'Date'), h('th', null, 'Show on site'))),
         h('tbody', null, rows)))
@@ -538,6 +543,8 @@
       S.weeks.map(w => h('th', { scope: 'col', 'data-week': w.id, class: 'adm-week-head' },
         h('span', { class: 'adm-wk' }, 'Wk ' + w.week_number),
         h('span', { class: 'adm-course', title: w.course }, w.course || 'No course'),
+        w.par ? h('span', { class: 'adm-par' }, 'Par ' + w.par)
+          : h('button', { class: 'adm-par missing', title: 'Rankings use score to par, so this week needs a par', onClick: () => { S.tab = 'schedule'; sessionSet('adm-tab', 'schedule'); renderShell(); } }, 'Add par'),
         publishToggle(w, true))),
       h('th', { scope: 'col', class: 'adm-total-head' }, 'Total'));
 

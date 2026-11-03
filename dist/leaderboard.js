@@ -98,14 +98,16 @@
       const s = m.scoreMap.get(team.id + '|' + w.id);
       if (s != null) rounds.push({ week: w, strokes: s });
     }
+    // Ranking is by score to par, so a round only counts once its week has a par.
+    const rated = rounds.filter(r => r.week.par);
     const sum = list => list.reduce((a, r) => a + r.strokes, 0);
-    const toPar = list => list.length && list.every(r => r.week.par) ? list.reduce((a, r) => a + r.strokes - r.week.par, 0) : null;
-    const best = [...rounds].sort((a, b) => a.strokes - b.strokes || a.week.week_number - b.week.week_number).slice(0, m.counting);
+    const toPar = list => list.length ? list.reduce((a, r) => a + r.strokes - r.week.par, 0) : null;
+    const best = [...rated].sort((a, b) => (a.strokes - a.week.par) - (b.strokes - b.week.par) || a.week.week_number - b.week.week_number).slice(0, m.counting);
     return {
       rounds,
       total: rounds.length ? sum(rounds) : null,
-      toPar: toPar(rounds),
-      best: rounds.length ? sum(best) : null,
+      toPar: toPar(rated),
+      best: best.length ? sum(best) : null,
       bestToPar: toPar(best),
       counted: new Set(best.map(r => r.week.id))
     };
@@ -134,7 +136,7 @@
   }
 
   function standings(teams, m, view) {
-    const key = view === 'playoff' ? 'best' : 'total';
+    const key = view === 'playoff' ? 'bestToPar' : 'toPar';
     const rows = rank(teams.map(team => ({ team, ...statsFor(team, m, Infinity) })), key);
     if (m.latestWeek > 1) {
       const before = rank(teams.map(team => ({ team, ...statsFor(team, m, m.latestWeek - 1) })), key);
@@ -290,7 +292,7 @@
     }
 
     const playoffNote = state.view === 'playoff'
-      ? `<p class="lb-note">Playoff standings count each ${individual ? 'player' : 'team'}’s lowest ${m.counting} weekly scores. Rounds that don’t count are crossed out.</p>` : '';
+      ? `<p class="lb-note">Playoff standings count each ${individual ? 'player' : 'team'}’s best ${m.counting} weeks, measured against par. Rounds that don’t count are crossed out.</p>` : '';
 
     return toolbar + playoffNote + groups.map(g => `<div class="lb-group">
         ${g.title ? `<h3 class="lb-group-title">${esc(g.title)}<span>${g.teams.length} ${individual ? 'player' : 'team'}${g.teams.length === 1 ? '' : 's'}</span></h3>` : ''}
@@ -312,8 +314,8 @@
     const head = `<tr>
       <th scope="col" class="lb-pos">Pos</th>
       <th scope="col" class="lb-name">${individual ? 'Player' : 'Team'}</th>
-      <th scope="col" class="lb-total">${playoff ? 'Best ' + m.counting : 'Total'}</th>
-      <th scope="col" class="lb-par"><span class="lb-long">To par</span><span class="lb-short" aria-hidden="true">+/−</span></th>
+      <th scope="col" class="lb-topar"><span class="lb-long">To par</span><span class="lb-short" aria-hidden="true">+/−</span></th>
+      <th scope="col" class="lb-strokes">${playoff ? 'Best ' + m.counting : 'Total'}</th>
       <th scope="col" class="lb-last">${latest ? 'Wk ' + latest.week_number : 'Last'}</th>
       ${m.weeks.map(w => `<th scope="col" class="lb-week${w.published && w.week_number <= m.latestWeek ? '' : ' lb-upcoming'}">
         <span class="lb-wk">Wk ${w.week_number}</span>
@@ -333,15 +335,15 @@
       const detail = m.weeks.filter(w => m.scoreMap.has(t.id + '|' + w.id)).map(w => {
         const s = m.scoreMap.get(t.id + '|' + w.id);
         const dropped = playoff && !r.counted.has(w.id);
-        return `<li class="${dropped ? 'lb-dropped' : ''}"><span>Wk ${w.week_number}</span><span>${esc(w.course || 'Course TBA')}</span><strong class="${parClass(s, w)}">${s}</strong></li>`;
+        return `<li class="${dropped ? 'lb-dropped' : ''}"><span>Wk ${w.week_number}</span><span>${esc(w.course || 'Course TBA')}</span><strong class="${parClass(s, w)}">${s}${w.par ? ` <small>(${formatToPar(s - w.par)})</small>` : ''}</strong></li>`;
       }).join('');
       return `<tr class="lb-row${state.hit === t.id ? ' lb-hit' : ''}" data-team="${esc(t.id)}">
         <td class="lb-pos">${r.pos == null ? '—' : (r.tied ? 'T' : '') + r.pos}${move}</td>
         <th scope="row" class="lb-name"><button type="button" class="lb-expand" aria-expanded="${open}" aria-controls="lb-d-${esc(t.id)}">
           <span class="lb-team">${esc(t.name)}</span>${!individual && t.captain ? `<span class="lb-captain">Capt. ${esc(t.captain)}</span>` : ''}
         </button></th>
-        <td class="lb-total">${total ?? ''}</td>
-        <td class="lb-par ${toPar < 0 ? 'lb-under' : ''}">${formatToPar(toPar)}</td>
+        <td class="lb-topar ${toPar < 0 ? 'lb-under' : ''}">${formatToPar(toPar)}</td>
+        <td class="lb-strokes">${total ?? ''}${total != null ? `<span class="lb-rounds">${playoff ? r.counted.size : r.rounds.length} rd${(playoff ? r.counted.size : r.rounds.length) === 1 ? '' : 's'}</span>` : ''}</td>
         <td class="lb-last ${lastScore != null ? parClass(lastScore, latest) : ''}">${lastScore ?? ''}</td>
         ${cells}
       </tr>
