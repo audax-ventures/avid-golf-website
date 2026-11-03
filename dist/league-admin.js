@@ -198,7 +198,7 @@
           h('p', { class: 'adm-auth-tags' }, 'League leaderboards', h('span', { 'aria-hidden': 'true' }, ' / '), 'Scores', h('span', { 'aria-hidden': 'true' }, ' / '), 'Teams'))),
       h('section', { class: 'adm-auth-panel' },
         h('div', { class: 'adm-auth-inner' },
-          h('a', { class: 'adm-auth-logo', href: 'index.html', 'aria-label': 'AVID Golf home' }, h('img', { src: 'assets/logo.png', alt: 'AVID Golf', width: 110, height: 108 })),
+          h('div', { class: 'adm-auth-logo' }, h('img', { src: 'assets/logo.png', alt: 'AVID Golf', width: 110, height: 108 })),
           h('h1', null, title),
           h('p', { class: 'adm-auth-sub' }, subtitle),
           form),
@@ -373,7 +373,7 @@
       h('a', { class: 'adm-side-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, svgIcon(NAV_ICONS.external), h('span', null, 'View leaderboard')));
     app.replaceChildren(h('div', { class: 'adm-shell' },
       h('aside', { class: 'adm-side' },
-        h('a', { class: 'adm-side-brand', href: 'index.html', 'aria-label': 'AVID Golf home' },
+        h('div', { class: 'adm-side-brand' },
           h('img', { src: 'assets/logo.png', alt: '', width: 56, height: 55 }),
           h('span', null, 'AVID Golf', h('small', null, 'League admin'))),
         h('div', { class: 'adm-season' },

@@ -37,8 +37,11 @@ h1,h2,h3{font-family:var(--head);letter-spacing:-.2px}
 .adm-app-mode .adm-main{max-width:none;padding:0}
 
 /* ---------- Shell: sidebar + content ---------- */
-.adm-shell{display:grid;grid-template-columns:268px minmax(0,1fr);min-height:100vh;min-height:100dvh}
-.adm-side{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:22px;padding:24px 16px 20px;background:linear-gradient(180deg,#183f2b 0%,var(--ink-2) 100%);color:#e9f0e7;overflow-y:auto;isolation:isolate}
+/* Floating sidebar: fixed to the window so it stays in view however far the page scrolls */
+.adm-shell{--side-w:256px;--side-gap:14px;min-height:100vh;min-height:100dvh;padding-left:calc(var(--side-w) + var(--side-gap))}
+.adm-side{position:fixed;z-index:20;top:var(--side-gap);bottom:var(--side-gap);left:var(--side-gap);width:var(--side-w);display:flex;flex-direction:column;gap:22px;padding:24px 16px 20px;border-radius:20px;color:#e9f0e7;overflow-y:auto;overflow-x:hidden;isolation:isolate;scrollbar-width:thin;scrollbar-color:#ffffff33 transparent;box-shadow:0 18px 40px #0f2c1d40,0 2px 6px #0f2c1d26;
+  /* The photo sits under a strong green overlay so it only shows faintly */
+  background:linear-gradient(180deg,#183f2bf0 0%,#163b28eb 45%,#0f2c1df5 100%),url('assets/photos/menu%20sidebar.jpg') center/cover no-repeat,var(--ink)}
 .adm-side:after{content:'';position:absolute;inset:auto -60px -40px auto;width:260px;height:260px;border-radius:50%;border:1px solid #ffffff0f;box-shadow:0 0 0 28px #ffffff05,0 0 0 56px #ffffff04;pointer-events:none;z-index:-1}
 .adm-side-brand{display:flex;align-items:center;gap:12px;padding:0 8px;color:inherit;text-decoration:none}
 .adm-side-brand img{width:48px;height:auto;background:#fff;border-radius:12px;padding:5px;box-shadow:0 4px 12px #0003}
@@ -317,14 +320,14 @@ textarea{width:100%;resize:vertical;line-height:1.5}
 .adm-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:13px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:min(560px,calc(100% - 32px));z-index:50;box-shadow:0 14px 34px #0f2c1d4d}
 .adm-toast.show{opacity:1;transform:translate(-50%,0)}
 .adm-toast.error{background:var(--red)}
-.adm-app-mode .adm-toast{left:calc(50% + 134px)}
+.adm-app-mode .adm-toast{left:calc(50% + 135px)}
 
 @media(max-width:1100px){
   .adm-split{grid-template-columns:1fr}
 }
 @media(max-width:900px){
-  .adm-shell{grid-template-columns:1fr}
-  .adm-side{position:relative;height:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand foot" "season season" "tabs tabs";gap:12px;padding:14px 16px 12px}
+  .adm-shell{padding-left:0}
+  .adm-side{position:relative;inset:auto;width:auto;border-radius:0;box-shadow:none;overflow:visible;height:auto;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand foot" "season season" "tabs tabs";gap:12px;padding:14px 16px 12px}
   .adm-side:after{display:none}
   .adm-side-brand{grid-area:brand;padding:0;min-width:0}
   .adm-side-brand img{width:38px;border-radius:10px;padding:4px}
