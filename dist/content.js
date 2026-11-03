@@ -11,8 +11,8 @@ window.AVID_CONTENT = {
   testimonials: [],
   // Live league leaderboard (Supabase > Project Settings > API).
   // The anon public key is meant to be public; the database rules decide who can change scores.
-  supabaseUrl: '',
-  supabaseAnonKey: '',
+  supabaseUrl: 'https://brujexxxuvffmnormscx.supabase.co',
+  supabaseAnonKey: 'sb_publishable_jQezct0kJFBQBgoZIxazkw_ugOUf3RO',
   // Older Google Sheets option, only used if Supabase is not set up.
   leaderboardEmbedUrl: '',
   leaderboardPublicUrl: '',
