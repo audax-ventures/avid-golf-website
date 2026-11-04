@@ -232,15 +232,10 @@
 
     root.innerHTML = `<div class="league-scoreboard lb">
       <div class="lb-head">
-        <div class="lb-head-top">
+        <div class="lb-head-row">
           <div class="lb-tabs" role="tablist" aria-label="Leagues">${tabs}</div>
-          <div class="lb-status">
-            ${demo ? '<span class="lb-sample">Sample data</span>' : ''}
-            <span class="lb-live-chip${state.live || demo ? ' on' : ''}">${state.live || demo ? '<span class="lb-live" aria-hidden="true"></span>Live' : 'Standings'}</span>
-            <span class="lb-updated" data-updated="${m.updated || ''}">${updatedText(m.updated)}</span>
-          </div>
+          ${view.tools}
         </div>
-        ${view.tools ? `<div class="lb-head-tools">${view.tools}</div>` : ''}
       </div>
       <div class="lb-panel" role="tabpanel" id="lb-panel" aria-labelledby="lb-tab-${esc(state.tab)}">
         ${view.body}
@@ -262,19 +257,58 @@
     renderHighlights(d, m);
   }
 
-  // Season facts in the page header above the board.
+  // The current week is the latest week whose start date (set in the admin) has arrived.
+  function currentWeek(m) {
+    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in the visitor's time zone
+    const dated = m.weeks.filter(w => w.play_date).sort((a, b) => a.week_number - b.week_number);
+    if (dated.length) {
+      const started = dated.filter(w => w.play_date <= today);
+      if (started.length) return { week: started[started.length - 1], upcoming: false };
+      return { week: dated[0], upcoming: true };
+    }
+    const played = m.weeks.find(w => w.week_number === m.latestWeek);
+    return { week: played || m.weeks[0], upcoming: !played };
+  }
+
+  function shortDate(iso) {
+    const [y, mo, d] = iso.split('-').map(Number);
+    return new Date(y, mo - 1, d).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+  }
+
+  // Page header: live status, current week, and each league's leader.
   function renderHero(d, m) {
-    const box = document.getElementById('lb-hero-stats');
     const season = document.getElementById('lb-hero-season');
     if (season) season.textContent = d.season.name;
-    if (!box) return;
-    const stat = (value, label) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
-    const aces = (d.aces || []).length;
-    box.innerHTML = stat(m.latestWeek ? `${m.latestWeek}<small>/${m.weekCount}</small>` : `0<small>/${m.weekCount}</small>`, 'Weeks played')
-      + stat(leaguesOf(d).length, leaguesOf(d).length === 1 ? 'League' : 'Leagues')
-      + stat((d.teams || []).length, 'Teams &amp; players')
-      + (aces ? stat(aces, aces === 1 ? 'Hole in one' : 'Hole in ones') : '');
-    box.hidden = false;
+    const live = document.getElementById('lb-hero-live');
+    if (live) {
+      live.innerHTML = `${demo ? '<span class="lb-sample">Sample data</span>' : ''}<span class="lb-live-chip${state.live || demo ? ' on' : ''}">${state.live || demo ? '<span class="lb-live" aria-hidden="true"></span>Live' : 'Standings'}</span><span class="lb-updated" data-updated="${m.updated || ''}">${updatedText(m.updated)}</span>`;
+      live.hidden = false;
+    }
+    const box = document.getElementById('lb-hero-stats');
+    if (box) {
+      const cw = currentWeek(m);
+      const stat = (label, value, sub, cls) => `<div class="${cls || ''}"><dt>${label}</dt><dd>${value}</dd>${sub ? `<span class="lb-hero-sub">${sub}</span>` : ''}</div>`;
+      const aces = (d.aces || []).length;
+      box.innerHTML = (cw.week ? stat(cw.upcoming && cw.week.play_date ? `Starts ${esc(shortDate(cw.week.play_date))}` : 'Current week', `Week ${cw.week.week_number}`, esc(cw.week.course || 'Course to be announced'), 'wide') : '')
+        + stat('Teams &amp; players', (d.teams || []).length)
+        + (aces ? stat(aces === 1 ? 'Hole in one' : 'Hole in ones', aces) : '');
+      box.hidden = false;
+    }
+    const lead = document.getElementById('lb-hero-leaders');
+    if (lead) {
+      const cards = leaguesOf(d).map(l => {
+        const top = standings(teamsOf(d, l.id), m, 'total').filter(r => r.pos === 1);
+        if (!top.length) return '';
+        const r = top[0];
+        return `<a class="lb-leader" href="#standings/${esc(slug(l.name))}">
+          <span class="lb-leader-league">${esc(l.name)} leader${top.length > 1 ? ' · tied' : ''}</span>
+          <strong>${esc(teamLabel(r.team))}${top.length > 1 ? ` <small>+${top.length - 1}</small>` : ''}</strong>
+          <span class="lb-leader-par${r.toPar < 0 ? ' under' : ''}">${formatToPar(r.toPar)}</span>
+        </a>`;
+      }).join('');
+      lead.innerHTML = cards;
+      lead.hidden = !cards;
+    }
   }
 
   function tabButton(id, name) {
@@ -309,12 +343,13 @@
       return `<option value="${esc(teamLabel(t))}">${esc(lg ? lg.name : '')}</option>`;
     }).join('');
 
-    const chips = flighted ? `<div class="lb-flights" role="group" aria-label="Flights">
-        ${chip('all', 'All flights')}${flights.filter(f => teams.some(t => t.flight_id === f.id)).map(f => chip(f.id, f.name)).join('')}
-      </div>` : '<div></div>';
+    const flightPick = flighted ? `<label class="lb-flight-pick"><span class="sr-only">Flight</span>
+        <select>${[['all', 'All flights'], ...flights.filter(f => teams.some(t => t.flight_id === f.id)).map(f => [f.id, f.name])]
+          .map(([id, name]) => `<option value="${esc(id)}"${state.flight === id ? ' selected' : ''}>${esc(name)}</option>`).join('')}</select>
+      </label>` : '';
 
-    const toolbar = `<div class="lb-toolbar">${chips}
-      <div class="lb-tools">
+    const toolbar = `<div class="lb-toolbar">
+      <div class="lb-tools">${flightPick}
         <div class="lb-view" role="group" aria-label="Standings view">
           <button type="button" data-view="total" aria-pressed="${state.view === 'total'}">Season total</button>
           <button type="button" data-view="playoff" aria-pressed="${state.view === 'playoff'}">Playoff race · best ${m.counting}</button>
@@ -516,6 +551,11 @@
         root.querySelector(`.lb-tab[data-tab="${CSS.escape(next.dataset.tab)}"]`)?.focus();
       });
     });
+    root.querySelector('.lb-flight-pick select')?.addEventListener('change', e => {
+      state.flight = e.target.value;
+      updateHash();
+      render();
+    });
     root.querySelectorAll('.lb-chip').forEach(btn => btn.addEventListener('click', () => {
       state.flight = btn.dataset.flight;
       updateHash();
@@ -649,11 +689,10 @@
       render();
       requestAnimationFrame(() => document.getElementById('standings')?.scrollIntoView());
     }
-    window.addEventListener('hashchange', () => { if (applyHash()) render(); });
+    window.addEventListener('hashchange', () => { if (applyHash()) { render(); document.getElementById('standings')?.scrollIntoView({ behavior: 'smooth' }); } });
     window.addEventListener('resize', () => root.querySelectorAll('.lb-table-wrap').forEach(markScroll), { passive: true });
     setInterval(() => {
-      const el = root.querySelector('.lb-updated');
-      if (el) el.textContent = updatedText(Number(el.dataset.updated));
+      document.querySelectorAll('.lb-updated').forEach(el => { el.textContent = updatedText(Number(el.dataset.updated)); });
     }, 30000);
     if (demo) return;
 
@@ -680,7 +719,8 @@
     const courses = ['Pebble Beach Golf Links', 'St Andrews Old Course', 'TPC Sawgrass', 'Bethpage Black', 'Whistling Straits', 'Banff Springs', 'Pinehurst No. 2', 'Royal Portrush', 'Cabot Cliffs', 'Kiawah Ocean Course', 'Oakmont', 'Carnoustie', 'Torrey Pines South', 'Muirfield Village', 'Shinnecock Hills', 'Harbour Town'];
     const season = { id: 's1', name: '2026–27 Winter League', is_current: true, week_count: 16, counting_rounds: 10, missed_rule: 'worst', missed_penalty: 0 };
     const playedWeeks = 7;
-    const weeks = courses.map((c, i) => ({ id: id('w', i + 1), season_id: 's1', week_number: i + 1, course: c, par: i % 5 === 3 ? 71 : 72, published: i < playedWeeks }));
+    const dayMs = 864e5;
+    const weeks = courses.map((c, i) => ({ id: id('w', i + 1), season_id: 's1', week_number: i + 1, course: c, par: i % 5 === 3 ? 71 : 72, published: i < playedWeeks, play_date: new Date(Date.now() + (i - playedWeeks + 1) * 7 * dayMs - 2 * dayMs).toLocaleDateString('en-CA') }));
     const leagues = [
       { id: 'l1', name: '4-Ball', kind: 'team' },
       { id: 'l2', name: '2-Ball', kind: 'team' },

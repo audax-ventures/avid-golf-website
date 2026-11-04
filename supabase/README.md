@@ -63,6 +63,7 @@ These two values are meant to be public. The database rules from `schema.sql` ar
 - **Missed weeks:** by default a missed week (after a team's first round) counts as the highest score posted that week in the team's league, so nobody gains by skipping. You can switch to "leave blank" or add penalty strokes under *Season settings*.
 - **Playoff race:** the leaderboard's "Playoff race" view counts each team's best 10 weeks against par. The number is changeable under *Season settings*.
 
+- **Prize tracking:** each closest-to-the-pin winner has a Claimed box and a prize note on the admin page. This is stored in an admin-only table and never shown publicly.
 - **Hole in ones:** add them at the bottom of the *Closest to the pin & aces* tab. They appear on the leaderboard straight away.
 
 Whenever `schema.sql` is updated (for example when the missed-week setting and hole in ones were added), run it again in the SQL Editor. It's safe to re-run and only adds what's missing.

@@ -305,6 +305,11 @@
         wids.length ? L.selectAll(() => sb.from('scores').select('*').in('week_id', wids).order('team_id')) : [],
         wids.length ? L.selectAll(() => sb.from('ctp_results').select('*').in('week_id', wids).order('hole')) : []
       ]);
+      // Prize tracking is optional: if its table isn't set up yet, everything else still works.
+      const ctpIds = ctp.map(c => c.id);
+      const prizes = ctpIds.length ? await L.selectAll(() => sb.from('ctp_prizes').select('*').in('ctp_id', ctpIds).order('ctp_id')).catch(() => null) : [];
+      S.prizesReady = prizes !== null;
+      S.prizes = new Map((prizes || []).map(x => [x.ctp_id, x]));
       Object.assign(S, { weeks, leagues, flights, teams, scores, ctp, aces });
     } catch (err) {
       toast(friendlyError(err), 'error');
@@ -624,7 +629,7 @@
 
     add('Weeks & courses', [['Week', 'Course', 'Par', 'Date', 'On website'], ...S.weeks.map(w => [w.week_number, w.course, w.par ?? '', w.play_date || '', w.published ? 'Yes' : 'No'])], [7, 30, 6, 12, 11]);
     const ctp = [...S.ctp].sort((a, b) => byId(S.weeks, a.week_id).week_number - byId(S.weeks, b.week_id).week_number || a.hole - b.hole);
-    add('Closest to the pin', [['Week', 'Course', 'Hole', 'Player', 'Distance', 'Inches'], ...ctp.map(c => { const w = byId(S.weeks, c.week_id); return [w.week_number, w.course, c.hole, c.player, L.formatDistance(c.distance_in), c.distance_in ?? '']; })], [7, 28, 6, 26, 12, 8]);
+    add('Closest to the pin', [['Week', 'Course', 'Hole', 'Player', 'Distance', 'Inches', 'Prize claimed', 'Prize'], ...ctp.map(c => { const w = byId(S.weeks, c.week_id); const pz = S.prizes?.get(c.id); return [w.week_number, w.course, c.hole, c.player, L.formatDistance(c.distance_in), c.distance_in ?? '', pz?.claimed ? 'Yes' : 'No', pz?.prize || '']; })], [7, 28, 6, 26, 12, 8, 13, 26]);
     add('Hole in ones', [['Player', 'Hole', 'Course', 'Date'], ...S.aces.map(a => [a.player, a.hole, a.course, a.play_date || ''])], [26, 6, 28, 12]);
 
     X.writeFile(wb, `avid-golf-${L.slug(ss.name) || 'season'}-${new Date().toLocaleDateString('en-CA')}.xlsx`);
@@ -1059,7 +1064,7 @@
       h('div', { class: 'adm-toolbar' }, h('label', { class: 'adm-filter' }, 'Week ', weekSelect), h('div', { class: 'adm-toolbar-right' }, publishToggle(week))),
       h('datalist', { id: 'adm-players' }, names.map(n => h('option', { value: n }))),
       entries.length ? h('div', { class: 'adm-table-wrap' }, h('table', { class: 'adm-table adm-ctp' },
-        h('thead', null, h('tr', null, h('th', null, 'Hole'), h('th', null, 'Closest player'), h('th', null, 'Distance'), h('th', null, h('span', { class: 'sr-only' }, 'Delete')))),
+        h('thead', null, h('tr', null, h('th', null, 'Hole'), h('th', null, 'Closest player'), h('th', null, 'Distance'), h('th', null, 'Prize (admin only)'), h('th', null, h('span', { class: 'sr-only' }, 'Delete')))),
         h('tbody', null, rows))) : h('p', { class: 'adm-muted' }, 'No par 3s added for this week yet.'),
       addBtn,
       aceSection(week)
@@ -1152,9 +1157,32 @@
         if ((await run(S.sb.from('ctp_results').delete().eq('id', c.id))).ok) { S.ctp = S.ctp.filter(x => x !== c); renderShell(); }
       }
     }, '✕');
-    return h('tr', null, h('td', null, hole), h('td', null, player),
+    return h('tr', { class: S.prizes?.get(c.id)?.claimed ? 'adm-claimed' : '' }, h('td', null, hole), h('td', null, player),
       h('td', null, h('span', { class: 'adm-dist' }, ft, h('span', null, 'ft'), inch, h('span', null, 'in'))),
+      h('td', null, prizeCell(c)),
       h('td', { class: 'adm-cell-icon' }, del));
+  }
+
+  // Claimed checkbox and prize note. Saved to ctp_prizes, which only admins can read.
+  function prizeCell(c) {
+    if (!S.prizesReady) return h('span', { class: 'adm-muted small' }, 'Re-run schema.sql to turn on prize tracking');
+    const current = () => S.prizes.get(c.id) || { ctp_id: c.id, claimed: false, prize: '' };
+    const box = h('input', { type: 'checkbox', checked: current().claimed, 'aria-label': `Hole ${c.hole} prize claimed` });
+    const note = h('input', { type: 'text', value: current().prize, placeholder: 'Prize, e.g. $25 gift card', 'aria-label': `Hole ${c.hole} prize` });
+    const save = async (patch, field) => {
+      const row = { ...current(), ...patch, ctp_id: c.id };
+      delete row.updated_at;
+      const res = await run(S.sb.from('ctp_prizes').upsert(row, { onConflict: 'ctp_id' }), field);
+      if (res.ok) { S.prizes.set(c.id, row); field.closest('tr')?.classList.toggle('adm-claimed', row.claimed); }
+      return res.ok;
+    };
+    box.addEventListener('change', async () => {
+      if (!(await save({ claimed: box.checked }, label))) box.checked = !box.checked;
+      else toast(box.checked ? `${c.player || 'Winner'} has claimed their prize` : 'Marked as not claimed');
+    });
+    note.addEventListener('change', () => save({ prize: note.value.trim() }, note));
+    const label = h('label', { class: 'adm-claim' }, box, h('span', null, 'Claimed'));
+    return h('div', { class: 'adm-prize' }, label, note);
   }
 
   /* ---------- Season settings ---------- */

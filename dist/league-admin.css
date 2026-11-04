@@ -231,7 +231,13 @@ textarea{width:100%;resize:vertical;line-height:1.5}
 
 /* ---------- Closest to the pin & hole in ones ---------- */
 .adm-ctp td{white-space:nowrap}
-.adm-ctp td:nth-child(2){min-width:220px;width:50%}
+.adm-ctp td:nth-child(2){min-width:200px;width:34%}
+.adm-prize{display:flex;align-items:center;gap:10px;min-width:280px}
+.adm-prize input[type=text]{flex:1;min-width:150px}
+.adm-claim{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;padding:9px 12px;border:1px solid var(--line-2);border-radius:9px;background:#fff;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+.adm-claim input{width:17px;height:17px;accent-color:var(--brand);margin:0;cursor:pointer}
+.adm-claim:has(input:checked){background:#ecf7e5;border-color:#a9d993;color:var(--green)}
+.adm-table tbody tr.adm-claimed>*{background:#f5fbf0}
 .adm-dist{display:inline-flex;align-items:center;gap:6px}
 .adm-dist .adm-num{width:74px}
 .adm-dist span{font-size:12px;font-weight:600;color:var(--muted);margin-right:6px}

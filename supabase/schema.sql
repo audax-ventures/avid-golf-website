@@ -118,6 +118,14 @@ create table if not exists public.ctp_results (
   updated_at timestamptz not null default now()
 );
 
+-- Prize tracking for closest-to-the-pin winners. Admin only: never shown publicly.
+create table if not exists public.ctp_prizes (
+  ctp_id uuid primary key references public.ctp_results on delete cascade,
+  claimed boolean not null default false,
+  prize text not null default '',
+  updated_at timestamptz not null default now()
+);
+
 -- Hole in ones, listed on the leaderboard's closest-to-the-pin tab.
 create table if not exists public.hole_in_ones (
   id uuid primary key default gen_random_uuid(),
@@ -165,6 +173,7 @@ alter table public.teams enable row level security;
 alter table public.scores enable row level security;
 alter table public.ctp_results enable row level security;
 alter table public.hole_in_ones enable row level security;
+alter table public.ctp_prizes enable row level security;
 
 grant usage on schema public to anon, authenticated;
 grant select on public.seasons, public.weeks, public.leagues, public.flights,
@@ -172,6 +181,8 @@ grant select on public.seasons, public.weeks, public.leagues, public.flights,
 grant insert, update, delete on public.seasons, public.weeks, public.leagues,
   public.flights, public.teams, public.scores, public.ctp_results, public.hole_in_ones to authenticated;
 grant select on public.admins to authenticated;
+-- Prize details: signed-in accounts only (the policy below limits them to admins). No public access.
+grant select, insert, update, delete on public.ctp_prizes to authenticated;
 grant execute on function public.is_admin() to anon, authenticated;
 
 drop policy if exists "Admins can see themselves" on public.admins;
@@ -206,6 +217,14 @@ create policy "Public read published" on public.ctp_results for select using (
 drop policy if exists "Admin write" on public.ctp_results;
 create policy "Admin write" on public.ctp_results
   for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "Admins only" on public.ctp_prizes;
+create policy "Admins only" on public.ctp_prizes
+  for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop trigger if exists ctp_prizes_touch on public.ctp_prizes;
+create trigger ctp_prizes_touch before update on public.ctp_prizes
+  for each row execute function public.touch_updated_at();
 
 -- Live updates ----------------------------------------------------------------
 -- Lets the public leaderboard refresh by itself when scores change.
