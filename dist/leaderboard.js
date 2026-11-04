@@ -423,7 +423,7 @@
       return `<tr class="lb-row${state.hit === t.id ? ' lb-hit' : ''}${r.pos === 1 ? ' lb-lead' : ''}" data-team="${esc(t.id)}">
         <td class="lb-pos">${r.pos == null ? '—' : (r.tied ? 'T' : '') + r.pos}${move}</td>
         <th scope="row" class="lb-name"><button type="button" class="lb-expand" aria-expanded="${open}" aria-controls="lb-d-${esc(t.id)}">
-          <span class="lb-team">${esc(teamLabel(t))}</span>${!individual && t.name && t.captain ? `<span class="lb-captain">Capt. ${esc(t.captain)}</span>` : ''}
+          <span class="lb-team">${esc(teamLabel(t))}</span>${!individual && t.name && t.captain ? `<span class="lb-captain">${esc(t.captain)}</span>` : ''}
         </button></th>
         <td class="lb-topar ${toPar < 0 ? 'lb-under' : ''}">${formatToPar(toPar)}</td>
         <td class="lb-last ${last ? (last.missed ? 'lb-missed' : parClass(last.strokes, latest)) : ''}">${last ? last.strokes : ''}</td>
