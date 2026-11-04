@@ -40,7 +40,8 @@ Older option: to display league standings, publish only the intended public stan
 - Foresight Falcons are described as an upcoming upgrade, not as installed equipment.
 - Coach portraits and information remain placeholders pending approved content.
 - League details, clinics, demo days, testimonials and other unconfirmed content need owner approval before publication.
-- Contact and event forms prepare an email for the visitor to review and send using their email application. They do not submit to a server, reserve dates, or send automatically.
+- The contact form emails info@avidgolf.club directly through a Supabase Edge Function and Resend; see [`supabase/CONTACT-FORM.md`](supabase/CONTACT-FORM.md) for setup.
+- The event inquiry form still prepares an email for the visitor to review and send using their email application. It does not submit to a server, reserve dates, or send automatically.
 - The homepage cinematic hero uses an AI-generated still image with CSS camera motion. It is not a swing video or a photograph of the actual AVID venue. Motion can be paused, and reduced-motion preferences are supported.
 - Club inventory is currently handled by inquiry, not an online catalogue or checkout.
 

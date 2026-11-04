@@ -20,3 +20,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 body.motion-paused *,body.motion-paused *::before,body.motion-paused *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 body.motion-paused .button:hover,body.motion-paused .gift-stories a:hover img,body.motion-paused .feature-photo:hover img{transform:none}
 @media(prefers-reduced-motion:reduce){*::after{animation:none!important;transition:none!important}.button:hover,.gift-stories a:hover img,.feature-photo:hover img{transform:none}}
+.contact-trap{position:absolute!important;left:-10000px;width:1px;height:1px;overflow:hidden}
+.contact-status{margin-top:16px;font-size:15px;line-height:1.6}
+.contact-status.is-error{color:#9b1c1c}
+#contact-sent:focus{outline:none}
