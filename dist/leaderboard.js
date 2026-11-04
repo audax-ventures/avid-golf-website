@@ -682,7 +682,7 @@
       } catch (err) {
         console.error('Leaderboard:', err);
       }
-      if (!client) return; // Not set up yet: keep the "awaiting season" card.
+      if (!client) { render(); return; } // Not set up yet: show the "fresh season" card instead of the loading skeleton.
     }
     await load();
     if (root && applyHash()) {

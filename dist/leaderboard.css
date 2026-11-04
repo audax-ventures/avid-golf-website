@@ -174,6 +174,28 @@
 .lb-group-title{font-size:17px;margin-bottom:10px}
 .lb-group-title span{background:#eef2e8;color:#4f6354;border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600}
 
+/* Loading skeleton shown until the live standings arrive */
+.lb-skeleton .lb-panel{min-height:420px}
+.sk{display:block;border-radius:8px;background:linear-gradient(90deg,#e7ebe2 0%,#f3f5ef 40%,#e7ebe2 80%);background-size:300% 100%;animation:lb-shimmer 1.4s ease-in-out infinite}
+.lb-head .sk{background:linear-gradient(90deg,#ffffff14 0%,#ffffff26 40%,#ffffff14 80%);background-size:300% 100%}
+.sk-tabs{display:flex;gap:6px;padding:5px;border-radius:14px;background:#0d2619;border:1px solid #ffffff1a}
+.sk-tab{width:76px;height:38px;border-radius:10px}
+.lb-head .sk-tab.on{background:#ffffffd9}
+.sk-tab.wide{width:150px}
+.sk-tools{display:flex;gap:10px}
+.sk-tool{width:120px;height:40px;border-radius:30px}
+.sk-tool.wide{width:210px}
+.sk-title{width:140px;height:20px;margin-bottom:14px}
+.sk-table{border:1px solid #dbe2d5;border-radius:14px;overflow:hidden;background:#fff}
+.sk-head{height:62px;background:#173b29}
+.sk-row{display:grid;grid-template-columns:40px 220px 60px 1fr;gap:20px;align-items:center;padding:16px 18px;border-top:1px solid #e9ede5}
+.sk-row:nth-child(odd){background:#f5f6f2}
+.sk-pos{height:16px;width:22px}.sk-name{height:16px}.sk-par{height:18px}.sk-scores{height:14px}
+.lb-skeleton .lb-bottom{min-height:64px}
+@keyframes lb-shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+@media(max-width:760px){.sk-tab{width:62px}.sk-tab.wide{width:90px}.sk-tools{width:100%}.sk-tool,.sk-tool.wide{flex:1;width:auto}.sk-row{grid-template-columns:28px 1fr 46px;gap:12px}.sk-scores{display:none}}
+@media(prefers-reduced-motion:reduce){.sk{animation:none}}
+
 /* Footer */
 .league-page .lb .scoreboard-bottom{flex-wrap:wrap;gap:14px}
 .lb-legend{display:flex;gap:20px;flex-wrap:wrap;align-items:center;letter-spacing:.3px}
