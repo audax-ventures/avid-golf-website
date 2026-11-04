@@ -2,6 +2,12 @@
 const groups=[...document.querySelectorAll('.nav-group')];
 groups.forEach(group=>group.addEventListener('toggle',()=>{if(group.open)groups.forEach(other=>{if(other!==group)other.open=false})}));
 document.addEventListener('click',event=>groups.forEach(group=>{if(!group.contains(event.target))group.open=false}));
+// Desktop with a mouse: open dropdowns on hover. Touch screens and the mobile menu keep tap to open.
+const hoverNav=matchMedia('(hover:hover) and (pointer:fine) and (min-width:1051px)');
+groups.forEach(group=>{let closeTimer;const summary=group.querySelector('summary');
+group.addEventListener('mouseenter',()=>{if(!hoverNav.matches)return;clearTimeout(closeTimer);group.open=true});
+group.addEventListener('mouseleave',()=>{if(!hoverNav.matches)return;closeTimer=setTimeout(()=>{group.open=false},180)});
+summary.addEventListener('click',event=>{if(hoverNav.matches&&event.detail>0){event.preventDefault();group.open=true}})});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')groups.forEach(group=>{if(group.open){group.open=false;group.querySelector('summary').focus()}})});
 const photos={play:['assets/photos/play.webp','Friends enjoying a round at AVID Golf'],practice:['assets/photos/practice.webp','Golfer practising a shot in an AVID simulator bay'],unwind:['assets/photos/social.webp','Friends catching up in the AVID lounge']};
 const experienceImage=document.querySelector('#experience-image');
