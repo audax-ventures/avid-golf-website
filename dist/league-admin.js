@@ -215,16 +215,20 @@
       class: 'adm-form adm-auth-form', onSubmit: async e => {
         e.preventDefault();
         btn.disabled = true;
+        btn.firstChild.textContent = 'Signing in…';
         msg.textContent = '';
         const { data, error } = await S.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
-        btn.disabled = false;
+        const reset = () => { btn.disabled = false; btn.firstChild.textContent = 'Sign in'; };
         if (error) {
+          reset();
           msg.textContent = /invalid login|credentials/i.test(error.message) || error.status === 400
             ? 'That email and password don’t match. Please try again.'
             : 'Couldn’t reach the server. Check your connection and try again.';
           return;
         }
+        // The sign-in screen stays up (button reads "Signing in…") until the dashboard is ready.
         await signedIn(data.user);
+        if (btn.isConnected) reset();
       }
     },
     h('label', { for: 'adm-email' }, 'Email'), iconField('mail', email),
@@ -261,7 +265,6 @@
 
   async function signedIn(user) {
     S.user = user;
-    document.body.classList.remove('adm-auth-mode');
     dockAccount();
     account.replaceChildren(
       h('span', { id: 'adm-saving', class: 'adm-saving' }, 'All changes saved'),
@@ -356,6 +359,7 @@
   }
 
   function renderShell() {
+    document.body.classList.remove('adm-auth-mode');
     document.body.classList.add('adm-app-mode');
     const s = season();
     const seasonSelect = h('select', {
@@ -396,7 +400,7 @@
             h('span', { class: 'adm-eyebrow' }, s ? s.name : 'League admin'),
             head ? head.querySelector('h2') : h('h2', null, 'League admin'),
             head?.querySelector('p') || null),
-          S.tab === 'dashboard' ? null : stats),
+          S.tab === 'dashboard' ? h('button', { type: 'button', class: 'adm-btn ghost small adm-head-btn', onClick: exportExcel }, svgIcon(NAV_ICONS.download), 'Export to Excel') : stats),
         h('section', { class: S.tab === 'dashboard' ? 'adm-dash' : 'adm-card adm-main-card', role: 'tabpanel' }, nodes))));
     dockAccount(footer);
     // On phones the section menu scrolls sideways: keep the current section in view.
@@ -461,12 +465,23 @@
     return new Date(y, m - 1, d).toLocaleDateString('en-CA', { weekday: 'short', month: 'short', day: 'numeric' });
   }
 
+  // Same rule as the public leaderboard: the latest week whose start date has arrived.
+  function currentWeekByDate() {
+    const today = new Date().toLocaleDateString('en-CA');
+    const dated = S.weeks.filter(w => w.play_date);
+    if (dated.length) {
+      const started = dated.filter(w => w.play_date <= today);
+      if (started.length) return { week: started[started.length - 1], upcoming: false };
+      return { week: dated[0], upcoming: true };
+    }
+    const scored = S.weeks.filter(w => S.scores.some(x => x.week_id === w.id));
+    return { week: scored[scored.length - 1] || S.weeks[0], upcoming: !scored.length };
+  }
+
   function viewDashboard() {
-    const ss = season();
     const live = S.weeks.filter(w => w.published);
     const scoredWeeks = S.weeks.filter(w => S.scores.some(x => x.week_id === w.id));
-    // The week being worked on: the first one not on the website yet.
-    const focus = S.weeks.find(w => !w.published) || S.weeks[S.weeks.length - 1];
+    const { week: cur, upcoming } = currentWeekByDate();
     const lastLive = live[live.length - 1];
 
     // Key numbers
@@ -481,53 +496,62 @@
       tile('Teams & players', S.teams.length, `In ${S.leagues.length} league${S.leagues.length === 1 ? '' : 's'}`, 'ink'),
       tile('Hole in ones', S.aces.length, S.aces.length ? `Latest: ${S.aces[0].player}` : 'None yet this season', 'gold'));
 
-    // This week
+    // Current week (by date) with scores entered per league
     let weekPanel = h('p', { class: 'adm-empty' }, 'Add weeks under Season settings.');
-    if (focus) {
+    if (cur) {
       const bars = S.leagues.map(l => {
         const teams = leagueTeams(l.id);
-        const done = teams.filter(t => scoreOf(t.id, focus.id)).length;
+        const done = teams.filter(t => scoreOf(t.id, cur.id)).length;
         return h('li', null,
           h('span', { class: 'adm-bar-label' }, l.name),
           h('span', { class: 'adm-meter' + (teams.length && done === teams.length ? ' full' : '') }, h('i', { style: `width:${teams.length ? Math.round(done / teams.length * 100) : 0}%` })),
           h('span', { class: 'adm-bar-count' }, `${done}/${teams.length}`));
       });
+      const next = S.weeks.find(w => w.week_number === cur.week_number + 1);
       weekPanel = h('div', null,
         h('div', { class: 'adm-week-hero' },
-          h('div', { class: 'adm-week-num' }, h('small', null, 'Week'), h('strong', null, focus.week_number)),
+          h('div', { class: 'adm-week-num' }, h('small', null, 'Week'), h('strong', null, cur.week_number)),
           h('div', null,
-            h('h4', null, focus.course || 'Course not set yet'),
-            h('p', null, [focus.par ? 'Par ' + focus.par : 'Par not set', focus.play_date ? fmtDate(focus.play_date) : null].filter(Boolean).join(' · ')),
-            h('span', { class: 'adm-status ' + (focus.published ? 'on' : '') }, focus.published ? 'Live on the website' : 'Hidden from the website'))),
+            h('h4', null, cur.course || 'Course not set yet'),
+            h('p', null, [cur.par ? 'Par ' + cur.par : 'Par not set', cur.play_date ? (upcoming ? 'Starts ' : '') + fmtDate(cur.play_date) : 'No date set'].join(' · ')),
+            h('span', { class: 'adm-status ' + (cur.published ? 'on' : '') }, cur.published ? 'Live on the website' : 'Hidden from the website'))),
+        h('p', { class: 'adm-bars-title' }, 'Scores entered this week'),
         bars.length ? h('ul', { class: 'adm-bars' }, bars) : h('p', { class: 'adm-muted small' }, 'Add leagues and teams to start entering scores.'),
-        h('div', { class: 'adm-actions' },
-          h('button', { class: 'adm-btn small', onClick: () => go('scores', { scoreFocus: focus.id }) }, 'Enter week ' + focus.week_number + ' scores', svgIcon(NAV_ICONS.arrowRight)),
-          h('button', { class: 'adm-btn ghost small', onClick: () => go('schedule') }, 'Weeks & courses')));
+        h('div', { class: 'adm-week-foot' },
+          h('div', { class: 'adm-actions' },
+            h('button', { class: 'adm-btn small', onClick: () => go('scores', { scoreFocus: cur.id }) }, 'Enter week ' + cur.week_number + ' scores', svgIcon(NAV_ICONS.arrowRight)),
+            h('button', { class: 'adm-btn ghost small', onClick: () => go('schedule') }, 'Weeks & courses')),
+          next ? h('span', { class: 'adm-next' }, `Next: week ${next.week_number}${next.course ? ' · ' + next.course : ''}${next.play_date ? ' · ' + fmtDate(next.play_date) : ''}`) : null));
     }
 
-    // Things that need attention
-    const todo = [];
-    S.weeks.forEach(w => {
-      const n = S.scores.filter(x => x.week_id === w.id).length;
-      if (n && !w.par) todo.push([`Week ${w.week_number} has scores but no par, so it isn’t counted in the rankings.`, 'Add par', () => go('schedule')]);
-      if (n && !w.published && w !== focus) todo.push([`Week ${w.week_number} has ${n} score${n === 1 ? '' : 's'} but is hidden from the website.`, 'Review', () => go('scores', { scoreFocus: w.id })]);
-      if (w.published && !w.course) todo.push([`Week ${w.week_number} is live but has no course name.`, 'Add course', () => go('schedule')]);
-    });
-    if (focus && !focus.course) todo.push([`Week ${focus.week_number} (up next) has no course yet.`, 'Add course', () => go('schedule')]);
-    S.leagues.forEach(l => {
-      const flights = leagueFlights(l.id);
-      const teams = leagueTeams(l.id);
-      if (!teams.length) todo.push([`${l.name} has no ${l.kind === 'individual' ? 'players' : 'teams'} yet.`, 'Add', () => go('leagues', { leagueId: l.id })]);
-      const loose = flights.length ? teams.filter(t => !flights.some(f => f.id === t.flight_id)).length : 0;
-      if (loose) todo.push([`${loose} ${l.name} ${loose === 1 ? 'team isn’t' : 'teams aren’t'} in a flight yet.`, 'Assign', () => go('leagues', { leagueId: l.id })]);
-    });
-    S.ctp.filter(c => !c.player || c.distance_in == null).forEach(c => {
-      const w = byId(S.weeks, c.week_id);
-      todo.push([`Closest to the pin, week ${w.week_number} hole ${c.hole} is missing a ${c.player ? 'distance' : 'player'}.`, 'Finish', () => go('ctp', { ctpWeekId: w.id })]);
-    });
-    const attention = todo.length
-      ? h('ul', { class: 'adm-todo' }, todo.slice(0, 7).map(([text, label, fn]) => h('li', null, svgIcon(NAV_ICONS.alert, 'warn'), h('span', null, text), h('button', { class: 'adm-link', onClick: fn }, label))))
-      : h('div', { class: 'adm-allgood' }, svgIcon(NAV_ICONS.check), h('div', null, h('strong', null, 'All caught up'), h('span', null, 'Nothing needs your attention right now.')));
+    // Season timeline: one tile per week
+    const timeline = h('div', null,
+      h('ol', { class: 'adm-timeline' }, S.weeks.map(w => {
+        const n = S.scores.filter(x => x.week_id === w.id).length;
+        const state = w.published ? 'live' : n ? 'pending' : 'future';
+        const noPar = n && !w.par;
+        const tip = `Week ${w.week_number}${w.course ? ' · ' + w.course : ''}${w.play_date ? ' · ' + fmtDate(w.play_date) : ''} — ${w.published ? 'live' : n ? n + ' scores, hidden' : 'no scores yet'}${noPar ? ' · needs a par' : ''}`;
+        return h('li', null, h('button', {
+          type: 'button', class: `adm-tl ${state}${cur && w.id === cur.id ? ' current' : ''}`, title: tip, 'aria-label': tip,
+          onClick: () => go('scores', { scoreFocus: w.id })
+        }, h('span', null, w.week_number), noPar ? h('i', { 'aria-hidden': 'true' }, '!') : null));
+      })),
+      h('ul', { class: 'adm-tl-key' },
+        h('li', null, h('i', { class: 'live' }), 'Live'),
+        h('li', null, h('i', { class: 'pending' }), 'Scores in, hidden'),
+        h('li', null, h('i', { class: 'future' }), 'Still to play'),
+        h('li', null, h('i', { class: 'current' }), 'Current week')),
+      (() => {
+        const last = [...S.weeks].reverse().find(w => w.play_date);
+        const toPlay = S.weeks.filter(w => !w.published).length;
+        return h('dl', { class: 'adm-tl-sum' },
+          h('div', null, h('dt', null, 'Weeks live'), h('dd', null, live.length)),
+          h('div', null, h('dt', null, 'Still to play'), h('dd', null, toPlay)),
+          h('div', null, h('dt', null, 'Final week'), h('dd', null, last ? fmtDate(last.play_date) : '—')));
+      })(),
+      S.weeks.some(w => !w.par && S.scores.some(x => x.week_id === w.id))
+        ? h('p', { class: 'adm-tl-warn' }, svgIcon(NAV_ICONS.alert), 'Weeks marked ! have scores but no par, so they don’t count in the rankings yet. ', h('button', { class: 'adm-link', onClick: () => go('schedule') }, 'Add par'))
+        : null);
 
     // Leaderboard snapshot
     const snapshot = S.leagues.length ? h('div', { class: 'adm-snap' }, S.leagues.map(l => {
@@ -549,23 +573,25 @@
       intro('Dashboard', 'Welcome to the Avid Golf League.'),
       kpis,
       h('div', { class: 'adm-dash-grid' },
-        h('section', { class: 'adm-panel' }, h('h3', null, focus && focus.published ? 'Latest week' : 'Up next'), weekPanel),
-        h('section', { class: 'adm-panel' }, h('h3', null, 'Needs attention', todo.length ? h('span', { class: 'adm-count' }, todo.length) : null), attention)),
+        h('section', { class: 'adm-panel' }, h('h3', null, upcoming ? 'Up next' : 'Current week'), weekPanel),
+        h('section', { class: 'adm-panel' }, h('h3', null, 'Season timeline'), timeline)),
       h('section', { class: 'adm-panel' },
         h('div', { class: 'adm-panel-head' }, h('h3', null, 'Leaderboard snapshot'), h('a', { class: 'adm-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, 'Open leaderboard ↗')),
         h('p', { class: 'adm-muted small adm-panel-note' }, 'Top 3 in each league, as the public leaderboard shows them (live weeks only).'),
         snapshot),
-      h('div', { class: 'adm-dash-grid' },
+      h('div', { class: 'adm-dash-grid even' },
         h('section', { class: 'adm-panel' },
-          h('div', { class: 'adm-panel-head' }, h('h3', null, 'Closest to the pin'), h('button', { class: 'adm-link', onClick: () => go('ctp') }, 'Manage')),
+          h('div', { class: 'adm-panel-head' }, h('h3', null, 'Closest to the pin'), h('button', { class: 'adm-link', onClick: () => go('ctp', ctpWeek ? { ctpWeekId: ctpWeek.id } : {}) }, 'Manage')),
           ctpWeek ? h('div', null, h('p', { class: 'adm-muted small adm-panel-note' }, `Week ${ctpWeek.week_number}${ctpWeek.course ? ' · ' + ctpWeek.course : ''}`),
             h('ul', { class: 'adm-mini' }, ctpRows.map(c => h('li', null, h('span', null, 'Hole ' + c.hole), h('strong', null, c.player), h('span', null, L.formatDistance(c.distance_in))))))
-            : h('p', { class: 'adm-muted small' }, 'No winners entered yet.'),
-          S.aces.length ? h('p', { class: 'adm-ace-line' }, h('span', { class: 'adm-ace-badge' }, 'ACE'), `${S.aces[0].player} · hole ${S.aces[0].hole}${S.aces[0].course ? ' · ' + S.aces[0].course : ''}`) : null),
-        h('section', { class: 'adm-panel adm-export' },
-          h('h3', null, 'Export'),
-          h('p', { class: 'adm-muted small' }, 'Download the whole season as an Excel spreadsheet: standings, every league’s weekly scores, courses, closest to the pin and hole in ones, each on its own sheet.'),
-          h('button', { class: 'adm-btn small', onClick: exportExcel }, svgIcon(NAV_ICONS.download), 'Export to Excel')))
+            : h('p', { class: 'adm-muted small' }, 'No winners entered yet.')),
+        h('section', { class: 'adm-panel adm-panel-gold' },
+          h('div', { class: 'adm-panel-head' }, h('h3', null, 'Hole in ones'), h('button', { class: 'adm-link', onClick: () => go('ctp') }, 'Add')),
+          S.aces.length ? h('ul', { class: 'adm-aces-list' }, S.aces.slice(0, 4).map(a => h('li', null,
+            h('span', { class: 'adm-ace-badge' }, 'ACE'),
+            h('span', null, h('strong', null, a.player), h('small', null, `Hole ${a.hole}${a.course ? ' · ' + a.course : ''}`)),
+            a.play_date ? h('time', null, fmtDate(a.play_date)) : null)))
+            : h('p', { class: 'adm-muted small' }, 'None yet this season. When one happens, add it from Closest to the pin & aces.')))
     ];
   }
 
@@ -1306,7 +1332,7 @@
   }
 
   function showFirstSeason() {
-    document.body.classList.remove('adm-app-mode');
+    document.body.classList.remove('adm-app-mode', 'adm-auth-mode');
     dockAccount();
     app.replaceChildren(h('section', { class: 'adm-card adm-narrow' },
       h('h1', null, 'Welcome'),
