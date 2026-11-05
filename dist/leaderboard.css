@@ -16,10 +16,10 @@
 .lb-hero-live .lb-live-chip{color:#2c6b3b;background:#e5f3dc;border-color:#cbe8bb}
 .lb-hero-live .lb-live-chip .lb-live{background:#2a9d4f;box-shadow:0 0 0 0 #2a9d4f88}
 .lb-hero-live .lb-updated{color:var(--muted);font-size:12.5px}
-.lb-hero-stats{display:flex;gap:12px;margin:0}
+.lb-hero-stats{display:flex;justify-content:flex-end;gap:12px;margin:0}
 .lb-hero-stats>div{flex:1 1 0;min-width:0}
 .lb-hero-stats>div{background:#fff;border:1px solid #e0e6da;border-radius:16px;padding:16px 18px;box-shadow:0 1px 2px #173b290a}
-.lb-hero-stats>div.wide{flex:1.9 1 0;background:#173b29;border-color:#173b29;color:#fff}
+.lb-hero-stats>div.wide{flex:0 1 380px;background:#173b29;border-color:#173b29;color:#fff}
 .lb-hero-stats dt{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .lb-hero-stats .wide dt{color:#b7e48f}
 .lb-hero-stats dd{margin:0;font-size:32px;font-weight:700;letter-spacing:-1px;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums}

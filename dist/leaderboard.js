@@ -4,7 +4,8 @@
   const L = window.AVIDLeague;
   const root = document.getElementById('leaderboard');
   const highlights = document.getElementById('weekly-winners');
-  if (!L || (!root && !highlights)) return;
+  const home = document.getElementById('home-standings'); // homepage snapshot
+  if (!L || (!root && !highlights && !home)) return;
 
   const { esc, slug, formatDistance, formatToPar, teamLabel } = L;
   const demo = new URLSearchParams(location.search).get('preview') === 'demo';
@@ -208,8 +209,12 @@
 
   function draw() {
     const d = state.data;
-    if (!root) { // league.html: only the weekly highlights
-      if (d && d.season) renderHighlights(d, buildModel(d));
+    if (!root) { // league.html: weekly highlights; index.html: standings snapshot
+      if (d && d.season) {
+        const m = buildModel(d);
+        if (highlights) renderHighlights(d, m);
+        if (home) renderHome(d, m);
+      }
       return;
     }
     if (state.error && !d) {
@@ -257,6 +262,31 @@
     renderHighlights(d, m);
   }
 
+  // Homepage: top 5 of each league with a link to the full leaderboard.
+  function renderHome(d, m) {
+    const section = document.getElementById('league-standings');
+    const cards = leaguesOf(d).map(l => {
+      const individual = l.kind === 'individual';
+      const rows = standings(teamsOf(d, l.id), m, 'total').filter(r => r.pos != null).slice(0, 5);
+      if (!rows.length) return '';
+      return `<article class="hs-card">
+        <header><h3>${esc(l.name)}</h3><span>Top ${rows.length}</span></header>
+        <ol>${rows.map(r => `<li${r.pos === 1 ? ' class="hs-lead"' : ''}>
+          <span class="hs-pos">${r.tied ? 'T' : ''}${r.pos}</span>
+          <span class="hs-name"><strong>${esc(teamLabel(r.team))}</strong>${!individual && r.team.name && r.team.captain ? `<small>${esc(r.team.captain)}</small>` : ''}</span>
+          <span class="hs-par${r.toPar < 0 ? ' under' : ''}">${formatToPar(r.toPar)}</span>
+        </li>`).join('')}</ol>
+        <a class="hs-more" href="leaderboard.html#standings/${esc(slug(l.name))}">See full ${esc(l.name)} standings <span aria-hidden="true">→</span></a>
+      </article>`;
+    }).join('');
+    if (!cards) { if (section) section.hidden = true; return; } // nothing to show until scores are live
+    home.innerHTML = cards;
+    const week = document.getElementById('hs-week');
+    const cw = currentWeek(m);
+    if (week && cw.week) week.textContent = `${d.season.name} · ${cw.upcoming ? 'Starts' : 'Week'} ${cw.upcoming && cw.week.play_date ? shortDate(cw.week.play_date) : cw.week.week_number}${cw.week.course && !cw.upcoming ? ' · ' + cw.week.course : ''}`;
+    if (section) section.hidden = false;
+  }
+
   // The current week is the latest week whose start date (set in the admin) has arrived.
   function currentWeek(m) {
     const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in the visitor's time zone
@@ -288,10 +318,7 @@
     if (box) {
       const cw = currentWeek(m);
       const stat = (label, value, sub, cls) => `<div class="${cls || ''}"><dt>${label}</dt><dd>${value}</dd>${sub ? `<span class="lb-hero-sub">${sub}</span>` : ''}</div>`;
-      const aces = (d.aces || []).length;
-      box.innerHTML = (cw.week ? stat(cw.upcoming && cw.week.play_date ? `Starts ${esc(shortDate(cw.week.play_date))}` : 'Current week', `Week ${cw.week.week_number}`, esc(cw.week.course || 'Course to be announced'), 'wide') : '')
-        + stat('Teams &amp; players', (d.teams || []).length)
-        + (aces ? stat(aces === 1 ? 'Hole in one' : 'Hole in ones', aces) : '');
+      box.innerHTML = (cw.week ? stat(cw.upcoming && cw.week.play_date ? `Starts ${esc(shortDate(cw.week.play_date))}` : 'Current week', `Week ${cw.week.week_number}`, esc(cw.week.course || 'Course to be announced'), 'wide') : '');
       box.hidden = false;
     }
     const lead = document.getElementById('lb-hero-leaders');
@@ -690,11 +717,11 @@
       requestAnimationFrame(() => document.getElementById('standings')?.scrollIntoView());
     }
     window.addEventListener('hashchange', () => { if (applyHash()) { render(); document.getElementById('standings')?.scrollIntoView({ behavior: 'smooth' }); } });
-    window.addEventListener('resize', () => root.querySelectorAll('.lb-table-wrap').forEach(markScroll), { passive: true });
+    if (root) window.addEventListener('resize', () => root.querySelectorAll('.lb-table-wrap').forEach(markScroll), { passive: true });
     setInterval(() => {
       document.querySelectorAll('.lb-updated').forEach(el => { el.textContent = updatedText(Number(el.dataset.updated)); });
     }, 30000);
-    if (demo) return;
+    if (demo || !root) return; // live updates are only needed on the leaderboard page
 
     client.channel('league-leaderboard')
       .on('postgres_changes', { event: '*', schema: 'public' }, () => scheduleRefresh())
@@ -751,5 +778,11 @@
     return { seasons: [season], season, weeks, leagues, flights, teams, scores, ctp, aces };
   }
 
-  start();
+  // On the homepage, wait until the page has finished loading so the snapshot never slows it down.
+  if (!root && !highlights && home) {
+    const later = () => (window.requestIdleCallback || setTimeout)(start);
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
+  } else {
+    start();
+  }
 })();
