@@ -19,8 +19,10 @@
 .hs-card ol{list-style:none;margin:0;padding:6px 20px;flex:1}
 .hs-card li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1ea}
 .hs-card li:last-child{border-bottom:0}
-.hs-pos{font-size:14px;font-weight:700;color:var(--hs-muted);font-variant-numeric:tabular-nums}
-.hs-lead .hs-pos{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#c99a1e;color:#fff;font-size:12.5px}
+.hs-pos{font-size:14px;font-weight:700;color:#2f4a38;font-variant-numeric:tabular-nums}
+.hs-card li{position:relative}
+.hs-lead:before{content:'';position:absolute;left:-20px;top:0;bottom:0;width:3px;background:#c99a1e}
+.hs-lead .hs-pos{color:var(--hs-ink)}
 .hs-name{min-width:0}
 .hs-name strong{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hs-name small{display:block;font-size:12px;color:var(--hs-muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
