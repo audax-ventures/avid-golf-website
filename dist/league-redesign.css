@@ -43,3 +43,15 @@
 @media(prefers-reduced-motion:reduce){.league-page .league-jumps a{transition:none}}
 
 .league-page .league-detail-list{padding-left:20px;margin:0 0 26px;color:var(--muted);font-size:16px;line-height:1.8}.league-page .league-detail-list li{padding-left:4px;margin-bottom:16px}.league-page .league-detail-list strong{color:var(--ink,#17271e)}
+/* Registration status shown as a non-clickable button */
+.league-page .league-closed{background:#e7edde;color:#426343;cursor:default;box-shadow:none;transform:none}
+.league-page .league-closed:hover{transform:none;background:#e7edde;color:#426343}
+/* Centered leaderboard link */
+.league-board-cta{display:flex;justify-content:center;background:#f6f6ef;padding:4px 6% 34px}
+.league-board-link{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:#173b29;color:#f6f6ef;border-radius:16px;padding:22px 44px;min-width:min(100%,460px);transition:background 180ms,transform 180ms}
+.league-board-link:hover{background:#1f4d36;transform:translateY(-2px)}
+.league-board-link:focus-visible{outline:2px solid #197a3e;outline-offset:4px}
+.league-board-eyebrow{font-size:11px;letter-spacing:1.6px;color:#c5d5c1}
+.league-board-text{font-size:22px;letter-spacing:-.4px;color:#d3edb3}
+@media(max-width:760px){.league-board-cta{padding:0 6% 26px}.league-board-link{width:100%;padding:20px 22px}.league-board-text{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.league-board-link{transition:none}.league-board-link:hover{transform:none}}

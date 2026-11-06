@@ -24,3 +24,13 @@
 .events-page a:focus-visible,.events-page button:focus-visible{outline:2px solid #197a3e;outline-offset:4px}
 @media(max-width:950px){.events-page .event-story>div{padding:28px}.events-page .event-story h3{font-size:31px}.events-page .event-inquiry form{padding:25px}.events-page .event-details dl>div{grid-template-columns:1fr;gap:8px}}
 @media(max-width:760px){.events-page .section,.events-page .page-hero{padding:40px 6%}.events-page .page-hero,.events-page .event-story,.events-page .event-story.reverse,.events-page .event-group,.events-page .event-details>div,.events-page .event-layout{display:grid;grid-template-columns:1fr;gap:25px}.events-page .page-hero h1{font-size:49px;letter-spacing:-2.4px}.events-page .page-hero-photo{height:320px;border-radius:18px}.events-page .event-experiences,.events-page .event-details{padding-top:0}.events-page .event-story,.events-page .event-story.reverse{gap:0}.events-page .event-story img,.events-page .event-story.reverse img{height:290px;min-height:0;order:0}.events-page .event-story>div{order:1;padding:26px}.events-page .event-group{padding:26px;gap:0}.events-page .event-group h3{font-size:31px}.events-page .event-intro h2,.events-page .event-details h2{font-size:36px}.events-page .event-details dl{padding:8px 24px}.events-page .event-inquiry>h2{font-size:38px}.events-page .event-inquiry aside{padding:25px}.events-page .event-inquiry form{padding:25px 20px}.events-page .form-grid{grid-template-columns:1fr;gap:20px}.event-form-heading h3{font-size:30px}}
+/* Centered slogan under the hero */
+.events-page .page-hero .event-slogan{grid-column:1/-1;margin:40px 0 0;padding-top:30px;border-top:1px solid var(--line);text-align:center;font-size:clamp(18px,1.7vw,24px);letter-spacing:-.3px;line-height:1.5;color:var(--ink)}
+.events-page .page-hero .event-slogan{max-width:none;width:100%}.events-page .page-hero .event-slogan .slogan-item{white-space:nowrap}.events-page .page-hero .event-slogan .slogan-dot{color:var(--brand-dark);margin:0 .7em;font-weight:700}
+@media(max-width:760px){
+ .events-page .page-hero .event-slogan{grid-column:auto;margin:6px 0 0;padding-top:24px;font-size:17px}
+ /* Birthdays card: stack photo above text instead of forcing a second column */
+ .events-page .event-story.reverse img,.events-page .event-story.reverse>div{grid-column:auto;grid-row:auto}
+}
+@media(max-width:760px){.events-page .page-hero .event-slogan{font-size:16px}.events-page .page-hero .event-slogan .slogan-dot:nth-of-type(4){display:none}.events-page .page-hero .event-slogan .slogan-item:last-child{display:block;margin-top:4px}}
+@media(max-width:360px){.events-page .page-hero .event-slogan{font-size:14px}}
