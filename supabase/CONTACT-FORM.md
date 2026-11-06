@@ -1,14 +1,19 @@
-# Contact form email setup (Resend + Supabase)
+# Website form email setup (Resend + Supabase)
 
-The contact page's form sends messages straight to **info@avidgolf.club**. This is how it works:
+Two forms send straight to **info@avidgolf.club**:
 
-1. A visitor clicks **Send Message**.
-2. The website sends the form to a small Supabase Edge Function called `contact` (code: [`functions/contact/index.ts`](functions/contact/index.ts)).
+- the **contact form** on the Contact page (**Send Message**);
+- the **event inquiry form** on the Events page (**Send Inquiry**).
+
+This is how it works:
+
+1. A visitor submits either form.
+2. The website sends it to one small Supabase Edge Function called `contact`, which handles both forms (code: [`functions/contact/index.ts`](functions/contact/index.ts)).
 3. The function sends the email through Resend. **Reply** in your inbox goes straight to the visitor.
 
 The Resend key stays secret inside Supabase and never appears in the website.
 
-Until the steps below are done, the form shows "Sorry, your message didn't send", followed by the email address and phone number. Finish the setup **before** publishing the new contact page.
+Until the steps below are done, both forms show a "didn't send" message, followed by the email address and phone number. Finish the setup **before** publishing the new Contact and Events pages.
 
 ## 1. Resend account and domain (about 10 minutes, then wait for DNS)
 
@@ -28,6 +33,7 @@ In the same Supabase project the leaderboard uses:
 Optional secrets:
 
 - `CONTACT_TO`: a different inbox for messages. The default is `info@avidgolf.club`. For more than one inbox, use a different address or set up forwarding.
+- `EVENTS_TO`: a separate inbox for event inquiries only. The default is the same inbox as `CONTACT_TO`.
 - `CONTACT_FROM`: who the email is "from". The default is `AVID Golf Website <website@avidgolf.club>`. It must be on the verified domain.
 
 ## 3. Deploy the function
@@ -49,7 +55,10 @@ JWT verification has to be off because the website uses the new `sb_publishable_
 
 ## 4. Test it
 
-Send a message from the contact page. It should arrive at info@avidgolf.club within a minute, with the subject "Website inquiry — (name)".
+Send a test from each form. Each should arrive at info@avidgolf.club within a minute:
+
+- contact form: subject "Website inquiry — (name)";
+- event form: subject "Event inquiry — (event type) — (date) — (name)", with every detail from the form listed in the email.
 
 If it doesn't arrive:
 
