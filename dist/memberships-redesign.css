@@ -13,7 +13,7 @@
 .members-page .plan-heading h2{font-size:clamp(36px,4vw,52px);letter-spacing:-1.8px;line-height:1.06}.members-page .plan-heading p{font-size:16px}
 .members-page .plan-selector{border:0;gap:14px;margin-bottom:22px}
 .members-page .plan-selector button{background:#fff;border:1px solid #e3e7dd;border-radius:12px;padding:24px;gap:14px;color:var(--muted);text-align:left;transition:background 200ms,color 200ms}
-.members-page .plan-selector button[aria-pressed=true]{background:#173b29;color:#f6f6ef;border-color:#173b29}.members-page .plan-selector button[aria-pressed=true] strong{color:#d3edb3}
+.members-page .plan-selector button[aria-expanded=true]{background:#173b29;color:#f6f6ef;border-color:#173b29}.members-page .plan-selector button[aria-expanded=true] strong{color:#d3edb3}
 .members-page .plan-selector strong{font-size:24px;letter-spacing:-.6px;line-height:1.2}.members-page .plan-selector small{font-size:12px;line-height:1.5}.members-page .plan-selector button>span{font-size:10px;letter-spacing:1.1px}
 .members-page .member-plan{grid-template-columns:.85fr 1.3fr;gap:0;padding:0;border-radius:18px;overflow:hidden;background:#fff;align-items:stretch}
 .members-page .member-plan[hidden]{display:none}
@@ -44,3 +44,24 @@
 @media(max-width:950px){.members-page .plan-selector button{padding:20px}.members-page .plan-selector strong{font-size:21px}.members-page .plan-price-column,.members-page .plan-benefits,.winter-inner>div{padding:28px}.members-page .plan-price-column h3{font-size:32px}}
 @media(max-width:760px){.members-page .section{padding:40px 6%}.members-page .member-hero,.members-page .member-plan,.winter-inner{grid-template-columns:1fr;gap:0}.members-page .member-hero{gap:30px}.members-page .member-hero h1{font-size:54px;letter-spacing:-2.5px}.members-page .member-hero img{height:320px}.members-page .member-plans{padding-top:0}.members-page .plan-heading h2{font-size:36px}.members-page .plan-selector{grid-template-columns:1fr;gap:10px}.members-page .plan-selector button{padding:20px;gap:8px}.members-page .plan-selector strong{font-size:23px}.members-page .plan-benefits,.members-page .plan-price-column,.winter-inner>div{padding:26px}.members-page .member-price{font-size:64px}.members-page .winter-difference{padding-top:0}.members-page .winter-difference h2{font-size:36px}.members-page .winter-difference figure{height:320px;min-height:0}.members-page .member-terms h2{font-size:36px}.members-page .summer-hours{padding-top:0}.members-page .member-close h2{font-size:42px}}
 @media(prefers-reduced-motion:reduce){.members-page .plan-selector button{transition:none}}
+/* Plan tabs: buttons in a row on desktop, accordion on phones */
+.members-page .plan-selector{display:grid;grid-template-columns:repeat(3,1fr);column-gap:14px;row-gap:22px;margin-bottom:0}
+.members-page .plan-selector>button{grid-row:1;position:relative}
+.members-page .plan-selector>.member-plan{grid-row:2;grid-column:1/-1}
+.members-page .plan-selector>button[aria-expanded=true]::after{content:"";position:absolute;left:50%;bottom:-12px;width:18px;height:18px;background:#173b29;transform:translateX(-50%) rotate(45deg);border-radius:3px}
+.plan-toggle{display:none}
+.members-page .plan-terms-link{margin-top:22px}
+@media(max-width:760px){
+ .members-page .plan-selector{display:block}
+ .members-page .plan-selector>button{width:100%;margin-top:10px;padding-right:58px}
+ .members-page .plan-selector>button:first-child{margin-top:0}
+ .members-page .plan-selector>button[aria-expanded=true]{border-radius:12px 12px 0 0}
+ .members-page .plan-selector>button[aria-expanded=true]::after{display:none}
+ .members-page .plan-selector>.member-plan{border-radius:0 0 12px 12px;margin:0}
+ .members-page .plan-selector>button{scroll-margin-top:95px}
+ .plan-toggle{display:block;position:absolute;right:20px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;border:1px solid currentColor;opacity:.75}
+ .plan-toggle::before,.plan-toggle::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;margin:-1px 0 0 -6px;background:currentColor}
+ .plan-toggle::after{transform:rotate(90deg)}
+ .members-page .plan-selector>button[aria-expanded=true] .plan-toggle{color:#d3edb3}
+ .members-page .plan-selector>button[aria-expanded=true] .plan-toggle::after{display:none}
+}
