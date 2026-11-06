@@ -260,8 +260,9 @@
 /* Phones: show position, team, total, to par and last week. Tap a team for every week. */
 @media(max-width:760px){
   .lb-head-row{padding:12px;gap:10px}
-  .lb .lb-tabs{width:100%}
-  .lb .lb-tab{padding:9px 13px;font-size:13.5px;flex-shrink:0}
+  .lb .lb-tabs{display:grid;grid-template-columns:1fr 1fr;width:100%;overflow:visible}
+  .lb .lb-tab{padding:9px 8px;font-size:13.5px;text-align:center;white-space:nowrap}
+  .lb .lb-tab:last-child:nth-child(odd){grid-column:1/-1}
   .lb-head .lb-toolbar,.lb-head .lb-tools{width:100%}
   .lb-head .lb-search,.lb-head .lb-search input{width:100%}
   .lb-head .lb-view{flex:1}
