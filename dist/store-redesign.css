@@ -25,3 +25,17 @@
 @media(max-width:760px){.store-page .section{padding:40px 6%}.store-page .store-hero,.store-page .gift-choice,.store-page .store-clubs{grid-template-columns:1fr;gap:28px}.store-page .store-hero h1{font-size:54px;letter-spacing:-2.5px}.store-page .store-hero figure img{height:320px}.store-page .store-gifts,.store-page .gift-experience{padding-top:0}.store-page .gift-choice{gap:0}.store-page .physical-photo img{height:380px;min-height:0;max-height:none;object-fit:contain}.store-page .gift-details{padding:26px}.store-page .digital-choice .digital-art,.store-page .digital-choice .gift-details{grid-column:auto;grid-row:auto}.store-page .digital-art{min-height:340px;padding:30px}.store-page .gift-stories{grid-template-columns:1fr;gap:22px}.store-page .gift-stories img{height:260px}.store-page .store-clubs h2{font-size:36px}.store-page .store-help{padding:28px}.store-page .store-help h3{font-size:31px}}
 @media(prefers-reduced-motion:reduce){.store-page .gift-stories a:hover img{transform:none}}
 body.motion-paused .store-page .gift-stories a:hover img{transform:none}
+/* Gift cards side by side; stack on mobile */
+.store-page .gift-options{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;margin-top:8px}
+.store-page .gift-options .gift-choice{display:flex;flex-direction:column;margin:0}
+.store-page .gift-options .physical-photo,.store-page .gift-options .digital-art{height:340px;min-height:0;flex:none}
+.store-page .gift-options .physical-photo img{height:100%;min-height:0;max-height:none;object-fit:cover}
+.store-page .gift-options .digital-art{display:grid;place-items:center;padding:32px}
+.store-page .gift-options .gift-details{flex:1;justify-content:flex-start;padding:32px}
+.store-page .gift-options .gift-details h3{font-size:34px;margin:18px 0 14px}
+.store-page .gift-options .gift-details ul{margin:12px 0 22px}
+.store-page .gift-options .gift-details .button{margin:auto 0 0}
+.store-page .gift-options .button[aria-disabled="true"]{cursor:default}
+.store-page .digital-choice .gift-details li{color:#c5d5c1}
+@media(max-width:950px){.store-page .gift-options .gift-details{padding:26px}.store-page .gift-options .gift-details h3{font-size:30px}.store-page .gift-options .physical-photo,.store-page .gift-options .digital-art{height:280px}}
+@media(max-width:760px){.store-page .gift-options{grid-template-columns:1fr;gap:20px}.store-page .gift-options .physical-photo,.store-page .gift-options .digital-art{height:300px}.store-page .gift-options .physical-photo img{object-fit:cover}}
