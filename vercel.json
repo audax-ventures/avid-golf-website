@@ -25,6 +25,16 @@
       "source": "/club-fittings.html",
       "destination": "/",
       "permanent": false
+    },
+    {
+      "source": "/store",
+      "destination": "/gift-cards",
+      "permanent": true
+    },
+    {
+      "source": "/store.html",
+      "destination": "/gift-cards",
+      "permanent": true
     }
   ],
   "headers": [
