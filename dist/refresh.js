@@ -15,7 +15,32 @@ if(experienceImage){document.querySelectorAll('[data-tab]').forEach(tab=>{new Im
 const photoDialog=document.querySelector('#photo-dialog');
 if(photoDialog){document.querySelectorAll('.gallery-open').forEach(button=>button.addEventListener('click',()=>{const img=button.querySelector('img');photoDialog.querySelector('img').src=button.dataset.full;photoDialog.querySelector('img').alt=img.alt;photoDialog.querySelector('p').textContent=button.closest('figure').querySelector('figcaption').textContent;photoDialog.showModal()}));photoDialog.querySelector('.photo-close').addEventListener('click',()=>photoDialog.close());photoDialog.addEventListener('click',e=>{if(e.target===photoDialog){const r=photoDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)photoDialog.close()}})}
 const contactForm=document.querySelector('#contact-form');
-if(contactForm){const review=document.querySelector('#contact-review');let message='';contactForm.addEventListener('submit',event=>{event.preventDefault();if(!contactForm.reportValidity())return;const data=new FormData(contactForm);message=`Name: ${data.get('name')}\nEmail: ${data.get('email')}\n\n${data.get('message')}`;document.querySelector('#contact-text').textContent=message;document.querySelector('#contact-send').href='mailto:info@AVIDGOLF.club?subject='+encodeURIComponent('Website inquiry — '+data.get('name'))+'&body='+encodeURIComponent(message);contactForm.hidden=true;review.hidden=false;review.focus()});document.querySelector('#contact-edit').addEventListener('click',()=>{review.hidden=true;contactForm.hidden=false;contactForm.elements.name.focus()});document.querySelector('#contact-copy').addEventListener('click',async()=>{const status=document.querySelector('#contact-status');try{await navigator.clipboard.writeText(message);status.textContent='Copied. Paste into an email to info@AVIDGOLF.club.'}catch{status.textContent='Select and copy the message above, then email info@AVIDGOLF.club.'}})}
+if(contactForm){
+  // Sends through the Supabase "contact" function, which emails info@avidgolf.club via Resend.
+  const sent=document.querySelector('#contact-sent');
+  const status=document.querySelector('#contact-status');
+  const button=contactForm.querySelector('button[type=submit]');
+  const fallback='Sorry, your message didn’t send. Please try again, or email <a href="mailto:info@AVIDGOLF.club">info@AVIDGOLF.club</a> or call <a href="tel:+12045052843">204-505-2843</a>.';
+  contactForm.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(!contactForm.reportValidity())return;
+    const config=window.AVID_CONTENT||{};
+    const payload=Object.fromEntries(new FormData(contactForm));
+    button.disabled=true;button.textContent='Sending…';status.textContent='';status.classList.remove('is-error');
+    try{
+      if(!config.supabaseUrl)throw new Error('Not configured');
+      const res=await fetch(config.supabaseUrl.replace(/\/$/,'')+'/functions/v1/contact',{method:'POST',headers:{'Content-Type':'application/json',apikey:config.supabaseAnonKey||''},body:JSON.stringify(payload)});
+      const result=await res.json().catch(()=>({}));
+      if(!res.ok||!result.ok)throw new Error(result.error||'Send failed');
+      contactForm.reset();contactForm.hidden=true;sent.hidden=false;sent.focus();
+    }catch{
+      status.innerHTML=fallback;status.classList.add('is-error');
+    }finally{
+      button.disabled=false;button.textContent='Send Message';
+    }
+  });
+  document.querySelector('#contact-another').addEventListener('click',()=>{sent.hidden=true;contactForm.hidden=false;contactForm.elements.name.focus()});
+}
 
 // Collapse a dropdown after keyboard focus leaves its group.
 groups.forEach(group=>group.addEventListener('focusout',()=>setTimeout(()=>{if(!group.contains(document.activeElement))group.open=false},0)));
