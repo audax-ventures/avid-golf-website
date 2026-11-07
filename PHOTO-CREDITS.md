@@ -25,3 +25,27 @@ Source: https://cojophoto.sproutstudio.com/gallery/avid-golf-shoot-2026
 
 - `assets/photos/front-bar.webp`: `Avid Golf 2026-0178.jpg` — front bar area.
 - `assets/falcon-exploded-view.webp`: Foresight Falcon expanded view supplied by AVID.
+
+- `assets/photos/gallery-0129.webp`: `Avid Golf 2026-0129.jpg` — A golfer takes a shot while a friend watches in an AVID simulator bay.
+
+- `assets/photos/gallery-0140.webp`: `Avid Golf 2026-0140.jpg` — Friends watching a golfer finish a swing.
+
+- `assets/photos/gallery-0147.webp`: `Avid Golf 2026-0147.jpg` — Drinks and golf memorabilia on the AVID bar shelves.
+
+- `assets/photos/gallery-0149.webp`: `Avid Golf 2026-0149.jpg` — Chilled Course Record drinks at the front bar.
+
+- `assets/photos/gallery-0156.webp`: `Avid Golf 2026-0156.jpg` — A golfer selecting options on the simulator computer.
+
+- `assets/photos/gallery-0163.webp`: `Avid Golf 2026-0163.jpg` — Guests gathering near the entrance at AVID Golf.
+
+- `assets/photos/gallery-0167.webp`: `Avid Golf 2026-0167.jpg` — Friends beneath the neon golf slogan inside AVID.
+
+- `assets/photos/gallery-0171.webp`: `Avid Golf 2026-0171.jpg` — A golfer finishing a drive with friends watching.
+
+- `assets/photos/gallery-0174.webp`: `Avid Golf 2026-0174.jpg` — A golfer taking a backswing in the simulator.
+
+- `assets/photos/gallery-0199.webp`: `Avid Golf 2026-0199.jpg` — A golfer in a blue hoodie playing a shot.
+
+- `assets/photos/gallery-0204.webp`: `Avid Golf 2026-0204.jpg` — The illuminated green and white AVID Golf logo.
+
+- `assets/photos/gallery-0217.webp`: `Avid Golf 2026-0217.jpg` — Friends watching a golfer play an approach shot.
