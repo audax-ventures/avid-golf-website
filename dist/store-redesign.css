@@ -35,10 +35,8 @@ body.motion-paused .store-page .gift-stories a:hover img{transform:none}
 .store-page .gift-options .gift-details h3{font-size:34px;margin:18px 0 14px}
 .store-page .gift-options .gift-details ul{margin:12px 0 22px}
 .store-page .gift-options .gift-details .button{margin:auto 0 0}
-.store-page .gift-options .button[aria-disabled="true"]{cursor:default}
 .store-page .digital-choice .gift-details li{color:#c5d5c1}
 @media(max-width:950px){.store-page .gift-options .gift-details{padding:26px}.store-page .gift-options .gift-details h3{font-size:30px}.store-page .gift-options .physical-photo,.store-page .gift-options .digital-art{height:280px}}
 @media(max-width:760px){.store-page .gift-options{grid-template-columns:1fr;gap:20px}.store-page .gift-options .physical-photo,.store-page .gift-options .digital-art{height:300px}.store-page .gift-options .physical-photo img{object-fit:cover}}
 .store-page .store-hero-actions{display:flex;flex-wrap:wrap;gap:12px}
-.store-page .store-hero-actions .button[aria-disabled="true"]{cursor:default}
 .store-page .store-hero-actions .button+.button{background:#d3edb3;color:#173b29}
