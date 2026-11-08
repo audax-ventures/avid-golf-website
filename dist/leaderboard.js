@@ -164,14 +164,15 @@
   function standings(teams, m, view) {
     const key = view === 'playoff' ? 'bestToPar' : 'toPar';
     const rows = rank(teams.map(team => ({ team, ...statsFor(team, m, Infinity) })), key);
-    // Movement is measured against the start of this group's most recent week that most teams
-    // have played, so one team entering scores early doesn't hide everyone else's arrows.
-    const playedBy = w => teams.filter(t => m.scoreMap.has(t.id + '|' + w.id)).length;
-    const recent = m.weeks.filter(w => w.week_number <= m.latestWeek && playedBy(w) > 0);
-    const full = recent.filter(w => playedBy(w) * 2 >= teams.length);
-    const ref = (full.length ? full : recent).reduce((a, w) => Math.max(a, w.week_number), 0);
-    if (ref > 1) {
-      const before = rank(teams.map(team => ({ team, ...statsFor(team, m, ref - 1) })), key);
+    // Arrows show movement since the end of last week, going by the current week's play date,
+    // and update as this week's scores come in. Until the first score of the week is entered,
+    // they keep showing last week's movement.
+    const { week: current, upcoming } = currentWeek(m);
+    const thisWeek = upcoming ? 0 : current.week_number;
+    const started = teams.some(t => m.weeks.some(w => w.week_number >= thisWeek && m.scoreMap.has(t.id + '|' + w.id)));
+    const since = started ? thisWeek - 1 : thisWeek - 2;
+    if (since >= 1) {
+      const before = rank(teams.map(team => ({ team, ...statsFor(team, m, since) })), key);
       const prevPos = new Map(before.map(r => [r.team.id, r.pos]));
       rows.forEach(r => {
         const p = prevPos.get(r.team.id);
