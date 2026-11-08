@@ -164,8 +164,14 @@
   function standings(teams, m, view) {
     const key = view === 'playoff' ? 'bestToPar' : 'toPar';
     const rows = rank(teams.map(team => ({ team, ...statsFor(team, m, Infinity) })), key);
-    if (m.latestWeek > 1) {
-      const before = rank(teams.map(team => ({ team, ...statsFor(team, m, m.latestWeek - 1) })), key);
+    // Movement is measured against the start of this group's most recent week that most teams
+    // have played, so one team entering scores early doesn't hide everyone else's arrows.
+    const playedBy = w => teams.filter(t => m.scoreMap.has(t.id + '|' + w.id)).length;
+    const recent = m.weeks.filter(w => w.week_number <= m.latestWeek && playedBy(w) > 0);
+    const full = recent.filter(w => playedBy(w) * 2 >= teams.length);
+    const ref = (full.length ? full : recent).reduce((a, w) => Math.max(a, w.week_number), 0);
+    if (ref > 1) {
+      const before = rank(teams.map(team => ({ team, ...statsFor(team, m, ref - 1) })), key);
       const prevPos = new Map(before.map(r => [r.team.id, r.pos]));
       rows.forEach(r => {
         const p = prevPos.get(r.team.id);
