@@ -50,3 +50,11 @@
 .coaching-page a:focus-visible,.coaching-page summary:focus-visible{outline:2px solid #197a3e;outline-offset:5px}
 @media(max-width:900px){.coaching-page .coaching-hero h1{font-size:54px}.coaching-page .lesson-options article,.coaching-insight-inner>div:last-child{padding:26px}.coaching-page .lesson-options h3{font-size:32px}.coaching-page .coaching-insight h2{font-size:32px}.coaching-page .clinic-intro,.coaching-page .clinic-schedule{padding:26px}}
 @media(max-width:760px){.coaching-page .section{padding:40px 6%}.coaching-page .coaching-hero,.coaching-page .lesson-options,.coaching-insight-inner,.coaching-page .winter-clinics{grid-template-columns:1fr}.coaching-page .coaching-hero h1{font-size:49px;letter-spacing:-2.4px}.coaching-page .coaching-hero img{height:320px}.coaching-page .lesson-section{padding-top:0}.coaching-page .lesson-heading h2{font-size:36px}.coaching-page .lesson-options{gap:20px}.coaching-page .lesson-options article>p{min-height:0}.coaching-page .coaching-insight{padding-top:0}.coaching-page .insight-photo{padding:30px 20px}.coaching-page .coaches-heading h2{font-size:37px}.coaching-page .portrait-placeholder{min-height:260px}.coaching-page .clinic-intro{border-radius:18px 18px 0 0}.coaching-page .clinic-schedule{border-radius:0 0 18px 18px}.coaching-page .clinic-intro h2{font-size:37px}.coaching-page .coaching-close h2{font-size:36px}}
+/* Coach headshots and credentials */
+.coaching-page .coach-profile{display:flex;flex-direction:column}
+.coaching-page .coach-photo{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:center top;background:#111513}
+.coaching-page .coach-profile-copy h3{margin:12px 0 16px}
+.coaching-page .coach-creds{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.coaching-page .coach-creds li{position:relative;padding-left:18px;font-size:14.5px;line-height:1.55;color:var(--muted)}
+.coaching-page .coach-creds li:before{content:'';position:absolute;left:0;top:.62em;width:8px;height:2px;border-radius:2px;background:var(--brand-dark)}
+@media(max-width:1050px) and (min-width:761px){.coaching-page .coach-profiles{grid-template-columns:repeat(2,1fr)}}
