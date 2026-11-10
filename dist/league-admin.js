@@ -909,7 +909,14 @@
     const individual = league.kind === 'individual';
     const flights = leagueFlights(league.id);
     if (S.scoreFlight !== 'all' && !byId(flights, S.scoreFlight)) S.scoreFlight = 'all';
-    let teams = sortTeams(leagueTeams(league.id), flights);
+    // Same order as the public leaderboard: by flight, then lowest score to par first.
+    // Teams with no rounds yet go last, alphabetically. The order is set when the page is
+    // drawn, so rows don't jump around while scores are being typed in.
+    const rank = new Map(standingsFor(league).map((r, i) => [r.team.id, r.toPar == null ? Infinity : i]));
+    let teams = sortTeams(leagueTeams(league.id), flights).sort((a, b) => {
+      const fa = flights.findIndex(f => f.id === a.flight_id), fb = flights.findIndex(f => f.id === b.flight_id);
+      return (fa < 0 ? 999 : fa) - (fb < 0 ? 999 : fb) || rank.get(a.id) - rank.get(b.id) || L.teamLabel(a).localeCompare(L.teamLabel(b));
+    });
     if (S.scoreFlight !== 'all') teams = teams.filter(t => (t.flight_id || 'none') === S.scoreFlight);
 
     const pills = h('div', { class: 'adm-pills', role: 'group', 'aria-label': 'League' },
@@ -970,7 +977,7 @@
     }
 
     return [
-      intro('Scores', 'Type each gross score and press Enter to move down to the next team. Scores save on their own. Leave a box empty if a team missed the week; the leaderboard applies the missed-week rule from Season settings. Turn a week to “Live” when its scores are ready to show on the website.'),
+      intro('Scores', 'Teams are listed in leaderboard order, lowest score to par first. Type each gross score and press Enter to move down to the next team. Scores save on their own. Leave a box empty if a team missed the week; the leaderboard applies the missed-week rule from Season settings. Turn a week to “Live” when its scores are ready to show on the website.'),
       h('div', { class: 'adm-toolbar' }, pills, h('div', { class: 'adm-toolbar-right' }, flightFilter, jump, exportBtn)),
       wrap
     ];
