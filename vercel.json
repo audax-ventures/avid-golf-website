@@ -25,6 +25,26 @@
       "source": "/store.html",
       "destination": "/gift-cards",
       "permanent": true
+    },
+    {
+      "source": "/pricinghours",
+      "destination": "/hours-pricing",
+      "permanent": true
+    },
+    {
+      "source": "/coaching-pricing",
+      "destination": "/coaching-clinics",
+      "permanent": true
+    },
+    {
+      "source": "/club-membership",
+      "destination": "/memberships",
+      "permanent": true
+    },
+    {
+      "source": "/clubfitting",
+      "destination": "/coaching-clinics",
+      "permanent": true
     }
   ],
   "headers": [
