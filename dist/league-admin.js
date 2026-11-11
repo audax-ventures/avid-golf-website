@@ -379,7 +379,7 @@
       h('span', { class: live ? 'on' : '' }, h('strong', null, live), ` of ${S.weeks.length} weeks live`));
     const footer = h('div', { class: 'adm-side-foot' },
       h('button', { type: 'button', class: 'adm-side-link', onClick: exportExcel }, svgIcon(NAV_ICONS.download), h('span', null, 'Export to Excel')),
-      h('a', { class: 'adm-side-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, svgIcon(NAV_ICONS.external), h('span', null, 'View leaderboard')));
+      h('a', { class: 'adm-side-link', href: '/leaderboard', target: '_blank', rel: 'noopener' }, svgIcon(NAV_ICONS.external), h('span', null, 'View leaderboard')));
     app.replaceChildren(h('div', { class: 'adm-shell' },
       h('aside', { class: 'adm-side' },
         h('div', { class: 'adm-side-brand' },
@@ -576,7 +576,7 @@
         h('section', { class: 'adm-panel' }, h('h3', null, upcoming ? 'Up next' : 'Current week'), weekPanel),
         h('section', { class: 'adm-panel' }, h('h3', null, 'Season timeline'), timeline)),
       h('section', { class: 'adm-panel' },
-        h('div', { class: 'adm-panel-head' }, h('h3', null, 'Leaderboard snapshot'), h('a', { class: 'adm-link', href: 'leaderboard.html', target: '_blank', rel: 'noopener' }, 'Open leaderboard ↗')),
+        h('div', { class: 'adm-panel-head' }, h('h3', null, 'Leaderboard snapshot'), h('a', { class: 'adm-link', href: '/leaderboard', target: '_blank', rel: 'noopener' }, 'Open leaderboard ↗')),
         h('p', { class: 'adm-muted small adm-panel-note' }, 'Top 3 in each league, as the public leaderboard shows them (live weeks only).'),
         snapshot),
       h('div', { class: 'adm-dash-grid even' },

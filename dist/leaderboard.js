@@ -283,7 +283,7 @@
           <span class="hs-name"><strong>${esc(teamLabel(r.team))}</strong>${!individual && r.team.name && r.team.captain ? `<small>${esc(r.team.captain)}</small>` : ''}</span>
           <span class="hs-par${r.toPar < 0 ? ' under' : ''}">${formatToPar(r.toPar)}</span>
         </li>`).join('')}</ol>
-        <a class="hs-more" href="leaderboard.html#standings/${esc(slug(l.name))}">See full ${esc(l.name)} standings <span aria-hidden="true">→</span></a>
+        <a class="hs-more" href="/leaderboard#standings/${esc(slug(l.name))}">See full ${esc(l.name)} standings <span aria-hidden="true">→</span></a>
       </article>`;
     }).join('');
     if (!cards) { if (section) section.hidden = true; return; } // nothing to show until scores are live
@@ -548,7 +548,7 @@
     const aceLine = ace ? `<p class="ctp-highlight-ace"><span class="ace-badge" aria-hidden="true">ACE</span><span><strong>Hole in one!</strong> ${esc(ace.player)}, hole ${ace.hole}${ace.course ? ' at ' + esc(ace.course) : ''}${ace.play_date ? ' · ' + esc(formatDate(ace.play_date)) : ''}</span></p>` : '';
     if (!list.length) {
       box.className = 'ctp-highlight';
-      box.innerHTML = `<span class="eyebrow">WINNERS CIRCLE</span>${aceLine}<a class="text-link" href="leaderboard.html${demo ? '?preview=demo' : ''}#standings/${CTP_TAB}">See the leaderboard</a>`;
+      box.innerHTML = `<span class="eyebrow">WINNERS CIRCLE</span>${aceLine}<a class="text-link" href="/leaderboard${demo ? '?preview=demo' : ''}#standings/${CTP_TAB}">See the leaderboard</a>`;
       return;
     }
     const lastWeek = m.weeks.filter(w => list.some(c => c.week_id === w.id)).pop();
@@ -560,7 +560,7 @@
       <ul>${rows.map(c => `<li><span>Hole ${c.hole}</span><strong>${esc(c.player)}</strong><span>${esc(formatDistance(c.distance_in))}</span></li>`).join('')}</ul>
       ${best ? `<p class="ctp-highlight-best">Season best: <strong>${esc(best.player)}</strong>, ${esc(formatDistance(best.distance_in))}</p>` : ''}
       ${aceLine}
-      <a class="text-link" href="leaderboard.html${demo ? '?preview=demo' : ''}#standings/${CTP_TAB}" data-ctp-link>See every week</a>`;
+      <a class="text-link" href="/leaderboard${demo ? '?preview=demo' : ''}#standings/${CTP_TAB}" data-ctp-link>See every week</a>`;
     if (root) {
       box.querySelector('[data-ctp-link]').addEventListener('click', e => {
         e.preventDefault();
