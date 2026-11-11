@@ -8,13 +8,19 @@ Live preview: https://avid-golf-homepage.riley847668.chatgpt.site
 
 The website uses plain HTML, CSS and JavaScript. No package installation or build step is required.
 
-From the repository root, run:
+Internal links use clean addresses such as `/contact` (Vercel's `cleanUrls`), so use a local server that supports them. From the repository root, run:
 
 ```sh
-python3 -m http.server 4173 --directory dist
+npx serve dist -l 4173
 ```
 
 Then open http://localhost:4173 in your browser.
+
+## SEO and sharing
+
+- Every page has its own title, description, preferred (canonical) address and share image. Share images live in `dist/assets/social/` and are 1200×630.
+- The homepage includes business details for Google (structured data: name, address, phone, booking link). Opening hours are left to the Google Business Profile because they change by season.
+- `dist/sitemap.xml` lists the public pages. Add new pages to it, and leave hidden pages such as `/league-admin` out.
 
 ## Project layout
 
