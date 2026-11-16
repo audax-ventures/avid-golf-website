@@ -7,16 +7,6 @@
   "cleanUrls": true,
   "redirects": [
     {
-      "source": "/club-fittings",
-      "destination": "/",
-      "permanent": false
-    },
-    {
-      "source": "/club-fittings.html",
-      "destination": "/",
-      "permanent": false
-    },
-    {
       "source": "/store",
       "destination": "/gift-cards",
       "permanent": true
@@ -43,7 +33,7 @@
     },
     {
       "source": "/clubfitting",
-      "destination": "/coaching-clinics",
+      "destination": "/club-fittings",
       "permanent": true
     }
   ],
