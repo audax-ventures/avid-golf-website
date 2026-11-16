@@ -4,7 +4,7 @@
  document.querySelectorAll('[data-event-choice]').forEach(link=>link.addEventListener('click',()=>{const field=document.querySelector('#event-form select[name=eventType]');if(field)field.value=link.dataset.eventChoice}));
  const brands=document.querySelector('#fitting-brands');
  const logos={'PING':['assets/ping.svg','PING'],'Cobra':['assets/cobra.svg','Cobra Golf'],'L.A.B. Golf':['assets/lab-golf.svg','L.A.B. Golf']};
- if(brands){[...brands.children].forEach(tile=>{const name=tile.textContent,logo=logos[name];if(!logo)return;tile.replaceChildren();const img=document.createElement('img');img.src=logo[0];img.alt=logo[1];img.width=190;img.height=65;tile.append(img)})}
+ if(brands){[...brands.children].forEach(tile=>{const name=tile.textContent,logo=logos[name];if(!logo)return;tile.replaceChildren();const img=document.createElement('img');img.src=logo[0];img.alt=logo[1];img.width=190;img.height=65;tile.dataset.brand=name.replace(/[^a-z]/gi,'').toLowerCase();tile.append(img)})}
  const demos=document.querySelector('#demo-days');
  if(demos&&window.AVID_CONTENT?.demoDays?.length){demos.querySelectorAll('article').forEach(article=>{article.classList.add('demo-event');const date=article.querySelector('.eyebrow');if(date){const plaque=document.createElement('div');plaque.className='date-plaque';const label=document.createElement('span');label.textContent='DEMO DAY';plaque.append(label,date);const content=document.createElement('div');while(article.firstChild)content.append(article.firstChild);article.append(plaque,content)}})}
 })();
