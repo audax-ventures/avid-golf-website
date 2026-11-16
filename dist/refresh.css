@@ -24,3 +24,6 @@ body.motion-paused .button:hover,body.motion-paused .gift-stories a:hover img,bo
 .contact-status{margin-top:16px;font-size:15px;line-height:1.6}
 .contact-status.is-error{color:#9b1c1c}
 #contact-sent:focus{outline:none}
+
+/* Room for Club Fittings in the menu on laptop-width screens */
+@media(min-width:1201px) and (max-width:1439px){.header nav{gap:24px}}
