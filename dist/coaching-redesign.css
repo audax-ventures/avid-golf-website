@@ -58,3 +58,12 @@
 .coaching-page .coach-creds li{position:relative;padding-left:18px;font-size:14.5px;line-height:1.55;color:var(--muted)}
 .coaching-page .coach-creds li:before{content:'';position:absolute;left:0;top:.62em;width:8px;height:2px;border-radius:2px;background:var(--brand-dark)}
 @media(max-width:1050px) and (min-width:761px){.coaching-page .coach-profiles{grid-template-columns:repeat(2,1fr)}}
+
+/* Email buttons under each coach */
+.coaching-page .coach-profile-copy{flex:1;display:flex;flex-direction:column}
+.coaching-page .coach-contact{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:12px;background:#173b29;color:#fff;border-radius:8px;font-size:15px;font-weight:600;padding:14px 18px;text-decoration:none;transition:background .2s}
+.coaching-page .coach-creds{margin-bottom:24px}
+.coaching-page .coach-contact span{font-size:18px;line-height:1;transition:transform .25s}
+.coaching-page .coach-contact:hover,.coaching-page .coach-contact:focus-visible{background:#197a3e}
+.coaching-page .coach-contact:hover span{transform:translate(2px,-2px)}
+@media(prefers-reduced-motion:reduce){.coaching-page .coach-contact:hover span{transform:none}}
